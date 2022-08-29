@@ -52,7 +52,7 @@ const GroupField = () => {
       <RNPickerSelect
         onValueChange={handleChange(DEVICE)}
         items={selectDataDevice}
-        placeholder={{ label: "Select device", value: null }}
+        placeholder={{ label: "Select device", value: "" }}
         value={(values as any)[DEVICE] || ""}
         style={pickerStyle}
       />
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   dateSelectTitle: {
     marginRight: 10,
-    fontWeight: "500"
+    fontWeight: "500",
   },
   date: {
     flexBasis: "50%",

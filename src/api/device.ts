@@ -28,9 +28,14 @@ const deviceApi = {
     } catch (error) {}
   },
 
-  updateDevice: async (deviceId: string) => {
+  updateDevice: async (deviceId: string, data?: any) => {
     try {
-      const result = await axios.patch(API_ROUTES.DEVICE_WITH_ID(deviceId));
+      let result;
+      if (data) {
+        result = await axios.patch(API_ROUTES.DEVICE_WITH_ID(deviceId), data);
+      } else {
+        result = await axios.patch(API_ROUTES.DEVICE_WITH_ID(deviceId));
+      }
 
       return result;
     } catch (error) {}

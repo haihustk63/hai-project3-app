@@ -13,8 +13,8 @@ class DeviceService {
     return await deviceApi.createDevice(data);
   };
 
-  updateDevice = async (deviceId: string) => {
-    return await deviceApi.updateDevice(deviceId);
+  updateDevice = async (deviceId: string, data?: any) => {
+    return await deviceApi.updateDevice(deviceId, data);
   };
 }
 

@@ -1,14 +1,54 @@
 import { Divider } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import AppButton from "src/components/AppButton";
 import AppSlider from "src/components/AppSlider";
+import { MIN_MAX_MOISTURE } from "src/constant";
+import { DeviceContext } from "src/context/DeviceContect";
+import { useUpdateMoistureConfig, useUpdateWaterPump } from "./hooks";
+
+const { MIN, MAX } = MIN_MAX_MOISTURE;
 
 const Garden = () => {
-  const [isWatering, setIsWatering] = useState(true);
   const [minPercent, setMinPercent] = useState(30);
-  const [maxPercent, setMaxPercent] = useState(50);
+  const [maxPercent, setMaxPercent] = useState(100);
+  const [refreshing, setRefreshing] = useState(false);
+  const [moistureDevice, setMoistureDevice] = useState();
+  const [waterPumpDevice, setWaterPumpDevice] = useState();
+
+  const { devices, getAllDevices } = useContext(DeviceContext);
+
+  useEffect(() => {
+    if (devices?.length) {
+      const findMoistureDevice = devices?.find((d: any) =>
+        d.type?.includes("moisture")
+      );
+
+      const findWaterPumpDevice = devices?.find((d: any) =>
+        d.type.includes("pump")
+      );
+
+      setMoistureDevice(findMoistureDevice);
+      setWaterPumpDevice(findWaterPumpDevice);
+
+      const {
+        config: { minThreshold, desireThreshold },
+      } = findMoistureDevice || {};
+
+      setMinPercent(minThreshold);
+      setMaxPercent(desireThreshold);
+    }
+  }, [devices]);
+
+  const { onUpdateMoistureConfig } = useUpdateMoistureConfig();
+  const { onUpdateWaterPump } = useUpdateWaterPump();
 
   const handleOnChangeMinValue = (value: number) => {
     setMinPercent(value);
@@ -18,36 +58,71 @@ const Garden = () => {
     setMaxPercent(value);
   };
 
+  const handleOnRefresh = async () => {
+    setRefreshing(true);
+    await new Promise((res, rej) => {
+      setTimeout(res, 1000);
+    });
+    await getAllDevices();
+    setRefreshing(false);
+  };
+
+  const handleUpdateConfig = async () => {
+    const deviceId = (moistureDevice as any)?._id;
+    await onUpdateMoistureConfig(deviceId, {
+      minThreshold: minPercent,
+      desireThreshold: maxPercent,
+    });
+  };
+
+  const handleToggleWaterPump = async () => {
+    if (waterPumpDevice) {
+      await onUpdateWaterPump((waterPumpDevice as any)._id);
+      await getAllDevices();
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleOnRefresh} />
+      }
+    >
       <View style={styles.info}>
         <Text style={styles.infoTitle}>SOIL MOISTURE</Text>
         <Divider />
-        <Text style={styles.infoValue}>33%</Text>
+        <Text style={styles.infoValue}>
+          {(moistureDevice as any)?.value || 0}
+        </Text>
       </View>
 
-      {isWatering ? (
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          colors={["#EECDA3", "#EF629F"]}
-          style={styles.textIsWatering}
-        >
-          <Text style={styles.textIsWateringInner}>
-            The system is watering automatically
-          </Text>
-        </LinearGradient>
+      {waterPumpDevice ? (
+        (waterPumpDevice as any).value ? (
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={["#EECDA3", "#EF629F"]}
+            style={styles.textIsWatering}
+          >
+            <Text style={styles.textIsWateringInner}>
+              The system is watering automatically
+            </Text>
+          </LinearGradient>
+        ) : (
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={["#EECDA3", "#EF629F"]}
+            style={styles.textIsWatering}
+          >
+            <Text style={styles.textIsWateringInner}>
+              The soil moisture is good!
+            </Text>
+          </LinearGradient>
+        )
       ) : (
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          colors={["#EECDA3", "#EF629F"]}
-          style={styles.textIsWatering}
-        >
-          <Text style={styles.textIsWateringInner}>
-            The soil moisture is good!
-          </Text>
-        </LinearGradient>
+        <></>
       )}
 
       <View style={styles.option}>
@@ -55,50 +130,58 @@ const Garden = () => {
         <Text style={styles.optionInstruction}>You choose min, max %</Text>
         <View style={styles.sliderContainer}>
           <Text style={styles.textSlider}>
-            Min percent:{" "}
+            Min threshold:{" "}
             <Text style={styles.textSliderPercent}>{minPercent}%</Text>
           </Text>
           <AppSlider
             value={minPercent}
-            minimum={0}
-            maximum={50}
+            minimum={MIN}
+            maximum={MAX}
             onValueChange={handleOnChangeMinValue}
             step={1}
           />
         </View>
         <View style={styles.sliderContainer}>
           <Text style={styles.textSlider}>
-            Max percent:{" "}
+            Desire threshold:{" "}
             <Text style={styles.textSliderPercent}>{maxPercent}%</Text>
           </Text>
           <AppSlider
             value={maxPercent}
-            minimum={0}
-            maximum={50}
+            minimum={MIN}
+            maximum={MAX}
             onValueChange={handleOnChangeMaxValue}
             step={1}
           />
         </View>
 
-        <AppButton title="Update Config" onPress={null} type="outline" />
+        <AppButton
+          title="Update Config"
+          onPress={handleUpdateConfig}
+          type="outline"
+        />
       </View>
 
-      {isWatering ? (
-        <AppButton
-          title="Stop Watering"
-          onPress={null}
-          buttonStyle={styles.stopStartButton}
-          color="secondary"
-        />
+      {waterPumpDevice ? (
+        (waterPumpDevice as any).value ? (
+          <AppButton
+            title="Stop Watering"
+            onPress={handleToggleWaterPump}
+            buttonStyle={styles.stopStartButton}
+            color="secondary"
+          />
+        ) : (
+          <AppButton
+            title="Start Watering"
+            onPress={handleToggleWaterPump}
+            buttonStyle={styles.stopStartButton}
+            color="secondary"
+          />
+        )
       ) : (
-        <AppButton
-          title="Start Watering"
-          onPress={null}
-          buttonStyle={styles.stopStartButton}
-          color="secondary"
-        />
+        <></>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

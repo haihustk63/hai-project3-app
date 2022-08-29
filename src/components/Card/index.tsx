@@ -44,7 +44,7 @@ const AppCard = ({
             titleStyle={styles.buttonTitle}
           />
         ) : (
-          <Text style={styles.rightText}>{value}</Text>
+          <Text style={styles.rightText}>Current: {value}</Text>
         )}
       </LinearGradient>
     </View>
@@ -84,8 +84,9 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   rightText: {
-    fontSize: 32,
+    fontSize: 24,
     textAlign: "center",
+    color: "#fff"
   },
   button: {
     padding: 5,

@@ -47,3 +47,8 @@ export const SCREEN_NAME = {
   REGISTER: "Register",
   PROFILE: "Profile",
 };
+
+export const MIN_MAX_MOISTURE = {
+  MIN: 0,
+  MAX: 100,
+};

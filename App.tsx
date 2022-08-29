@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useContext } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
+import FlashMessage from "react-native-flash-message";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AuthProvider, { AuthContext } from "src/context/AuthContext";
 import DeviceProvider from "src/context/DeviceContect";
@@ -62,6 +63,7 @@ export default function App() {
         <RuleProvider>
           <SafeAreaView style={styles.container}>
             <Navigation />
+            <FlashMessage position="bottom" />
           </SafeAreaView>
         </RuleProvider>
       </DeviceProvider>
