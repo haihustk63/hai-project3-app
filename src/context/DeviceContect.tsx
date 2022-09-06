@@ -1,12 +1,17 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { API_URL_EXPORT } from "src/constant";
 import deviceService from "src/services/device";
 import { AuthContext } from "./AuthContext";
+import { io } from "socket.io-client";
+
+const socket = io(API_URL_EXPORT);
 
 export const DeviceContext = createContext({}) as any;
 
 const DeviceProvider = ({ children }: { children: any }) => {
   const [deviceTypes, setDeviceTypes] = useState([]);
-  const [devices, setDevices] = useState([]);
+  const [devices, setDevices] = useState<any[]>([]);
+  const [floorMap, setFloorMap] = useState();
   const [selectDataDevice, setSelectDataDevice] = useState([]);
   const { info } = useContext(AuthContext) as any;
   const [loading, setLoading] = useState(false);
@@ -26,14 +31,72 @@ const DeviceProvider = ({ children }: { children: any }) => {
         value: device._id,
       }));
 
+      let newFloorMap = new Map();
+      data?.forEach((device: any) => {
+        newFloorMap.set(device.floor, [
+          ...(newFloorMap.get(device.floor) || []),
+          device,
+        ]);
+      });
+
+      newFloorMap.forEach((value, key) => {
+        let newValue = new Map();
+        value?.map((d: any) => {
+          newValue.set(d.room, [...(newValue.get(d.room) || []), d]);
+        });
+        newFloorMap.set(key, newValue);
+      });
+
       setDevices(data);
       setSelectDataDevice(selectData);
+      setFloorMap(newFloorMap as any);
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Client connected");
+    });
+
+    socket.on("DeviceValueChange", async (newInfo: any) => {
+      await getAllDevices();
+    });
+
+    socket.on("SensorValue", async (newInfo: any) => {
+      const { percent, pumpValue, sensorId, pumpId } = newInfo;
+      const newDevices: any[] = [...devices];
+      const sensorIndex = devices?.findIndex((d: any) => d._id === sensorId);
+      let pumpIndex;
+      if (pumpId) {
+        pumpIndex = devices?.findIndex((d: any) => d._id === pumpId);
+      }
+      if (sensorIndex) {
+        const sensorData = devices?.[sensorIndex] as any;
+        const newSensorData = { ...sensorData };
+        newSensorData.value = percent;
+        newDevices.splice(sensorIndex, 1, newSensorData);
+      }
+
+      if (pumpIndex) {
+        const pumpData = devices?.[pumpIndex] as any;
+        const newPumpData = { ...pumpData };
+        newPumpData.value = pumpValue;
+        newDevices.splice(pumpIndex, 1, newPumpData);
+      }
+
+      setDevices(newDevices);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("DeviceValueChange");
+      socket.off("SensorValue");
+    };
+  }, [devices]);
 
   useEffect(() => {
     const getAllDeviceTypes = async () => {
@@ -82,6 +145,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
         addNewDevice,
         getAllDevices,
         setDevices,
+        floorMap,
       }}
     >
       {children}

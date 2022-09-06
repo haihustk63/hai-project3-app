@@ -25,6 +25,7 @@ export const API_NAMES = {
   USER: "users",
   DEVICE: "devices",
   RULE: "rules",
+  RULE_CONDITION: "rules-condition",
 };
 
 export const API_ROUTES = {
@@ -36,19 +37,36 @@ export const API_ROUTES = {
   DEVICE_TYPE: `${API_URL}/${API_NAMES.DEVICE}/type`,
   RULE: `${API_URL}/${API_NAMES.RULE}`,
   RULE_WITH_ID: (id: string) => `${API_URL}/${API_NAMES.RULE}/${id}`,
+  RULE_CONDITION: `${API_URL}/${API_NAMES.RULE_CONDITION}`,
 };
 
 export const SCREEN_NAME = {
   HOME: "Home",
-  AUTOMATION_RULES: "Automation",
+  WELCOME: "Welcome",
+  RULE: "Rule",
+  AUTOMATION_RULES: " Add Rule",
+  RULES: "Rules",
   GARDEN: "Garden",
   ADD_NEW_DEVICE: "Devices",
   LOGIN: "Login",
   REGISTER: "Register",
   PROFILE: "Profile",
+  DEVICES: "Devices"
 };
 
 export const MIN_MAX_MOISTURE = {
   MIN: 0,
   MAX: 100,
 };
+
+export const DEVICE_VALUE_OPTIONS = [
+  {
+    label: "OFF",
+    value: "off",
+  },
+
+  {
+    label: "ON",
+    value: "on",
+  },
+];

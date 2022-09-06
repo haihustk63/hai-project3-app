@@ -10,6 +10,10 @@ export const ADD_NEW_RULES_FIELD = {
   DEVICE: "device",
   ON_TIME: "onTime",
   OFF_TIME: "offTime",
+  PRE_DEVICE: "preDevice",
+  AFTER_DEVICE: "afterDevice",
+  PRE_VALUE: "preValue",
+  AFTER_VALUE: "afterValue",
 };
 
 export const REGISTER_FIELD = {
@@ -28,7 +32,7 @@ export const addNewDeviceSchema = object({
   [ADD_NEW_DEVICE_FIELD.TYPE]: string().required("Please select device type"),
 });
 
-export const addAutomationRule = object({
+export const addAutomationRuleTime = object({
   [ADD_NEW_RULES_FIELD.NAME]: string().required("Name is required"),
   [ADD_NEW_RULES_FIELD.DEVICE]: string().required("Please select device"),
   [ADD_NEW_RULES_FIELD.ON_TIME]: string().required(
@@ -37,6 +41,14 @@ export const addAutomationRule = object({
   [ADD_NEW_RULES_FIELD.OFF_TIME]: string().required(
     "Please choose time to turn off device"
   ),
+});
+
+export const addAutomationRuleCondition = object({
+  [ADD_NEW_RULES_FIELD.NAME]: string().required("Name is required"),
+  [ADD_NEW_RULES_FIELD.PRE_DEVICE]: string().required("Please select device"),
+  [ADD_NEW_RULES_FIELD.PRE_VALUE]: string().required("Please choose status"),
+  [ADD_NEW_RULES_FIELD.AFTER_DEVICE]: string().required("Please select device"),
+  [ADD_NEW_RULES_FIELD.AFTER_VALUE]: string().required("Please choose status"),
 });
 
 export const loginSchema = object({

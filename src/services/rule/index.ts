@@ -12,6 +12,18 @@ class RuleService {
   deleteRule = async (ruleId: string) => {
     return await ruleApi.deleteRule(ruleId);
   };
+
+  addRuleCondition = async (data: any) => {
+    await ruleApi.addConditionRule(data);
+  };
+
+  getRulesCondition = async () => {
+    return await ruleApi.getAllRulesCondition();
+  };
+
+  deleteRuleCondition = async (ruleId: string) => {
+    return await ruleApi.deleteRuleCondition(ruleId);
+  };
 }
 
 const ruleService = new RuleService();

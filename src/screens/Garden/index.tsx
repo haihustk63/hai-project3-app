@@ -89,7 +89,7 @@ const Garden = () => {
         <RefreshControl refreshing={refreshing} onRefresh={handleOnRefresh} />
       }
     >
-      <View style={styles.info}>
+      <View style={{ ...styles.info, ...styles.shadow }}>
         <Text style={styles.infoTitle}>SOIL MOISTURE</Text>
         <Divider />
         <Text style={styles.infoValue}>
@@ -125,7 +125,7 @@ const Garden = () => {
         <></>
       )}
 
-      <View style={styles.option}>
+      <View style={{ ...styles.option, ...styles.shadow }}>
         <Text style={styles.optionTitle}>CONFIG</Text>
         <Text style={styles.optionInstruction}>You choose min, max %</Text>
         <View style={styles.sliderContainer}>
@@ -192,6 +192,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: 10,
+  },
+
+  shadow: {
+    shadowOffset: { width: 2, height: 4 },
+    shadowColor: "#171717",
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
 
   info: {

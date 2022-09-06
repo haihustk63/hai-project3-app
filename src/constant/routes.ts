@@ -5,6 +5,8 @@ import Profile from "src/screens/Profile";
 import Register from "src/screens/Register";
 import { SCREEN_NAME } from ".";
 import AutomationRules from "../screens/AutomationRules";
+import Devices from "src/screens/Devices";
+import Rules from "src/screens/Rules";
 
 // export const SCREEN_NAME = {
 //   HOME: "Home",
@@ -29,14 +31,35 @@ export const ROUTES_NOT_AUTH = [
 
 export const ROUTES_AUTH = [
   {
-    name: SCREEN_NAME.HOME,
-    component: Home,
-    icon: "home",
+    type: "stack",
+    name: "Welcome",
+    screens: [
+      {
+        name: SCREEN_NAME.HOME,
+        component: Home,
+        icon: "home",
+      },
+      {
+        name: SCREEN_NAME.DEVICES,
+        component: Devices,
+      },
+    ],
   },
   {
-    name: SCREEN_NAME.AUTOMATION_RULES,
-    component: AutomationRules,
-    icon: "tasks",
+    type: "stack",
+    name: "Rule",
+    screens: [
+      {
+        name: SCREEN_NAME.RULES,
+        component: Rules,
+        icon: "tasks",
+      },
+      {
+        name: SCREEN_NAME.AUTOMATION_RULES,
+        component: AutomationRules,
+        icon: "tasks",
+      },
+    ],
   },
   {
     name: SCREEN_NAME.GARDEN,

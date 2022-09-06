@@ -1,22 +1,15 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet, View
-} from "react-native";
-import io from "socket.io-client";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import RuleCard from "src/components/RuleCard";
-import { API_URL_EXPORT } from "src/constant";
 import { DeviceContext } from "src/context/DeviceContect";
 import { RuleContext } from "src/context/RuleContext";
 import Card from "../../components/Card";
 import GroupButton from "./GroupButton";
 import useUpdateDeviceStatus from "./hooks";
 
-const socket = io(API_URL_EXPORT);
 
 const Home = () => {
-  const { devices, loading, deviceTypes, getAllDevices, setDevices } =
+  const { devices, getAllDevices, setDevices } =
     useContext(DeviceContext);
 
   const { rules, handleDeleteRule, handleGetRules } = useContext(RuleContext);
@@ -46,22 +39,6 @@ const Home = () => {
     }
   }, [devices]);
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Client connected");
-    });
-
-    socket.on("DeviceValueChange", (newInfo: any) => {
-      const { deviceId, value } = newInfo;
-      handleSetNewDevices(deviceId as string, value as number);
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("DeviceValueChange");
-    };
-  }, [handleSetNewDevices]);
-
   const handleOnRefresh = async () => {
     setRefreshing(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -69,19 +46,21 @@ const Home = () => {
     await handleGetRules();
   };
 
-  if (loading) return null;
+  const selectItems = devices?.length > 4 ? devices?.slice(0, 4) : devices;
 
-  const cardItems =
-    devices?.map((d: any) => ({
-      title: d?.name,
-      value: d?.interact ? (d?.value ? "ON" : "OFF") : d?.value,
-      buttonColor: d?.value === 1 ? "primary" : "warning",
-      hasButton: d?.interact,
-      deviceId: d._id,
-    })) || [];
+  const cardItems = selectItems?.map((d: any) => ({
+    title: d?.name,
+    value: d?.interact ? (d?.value ? "ON" : "OFF") : d?.value,
+    buttonColor: d?.value === 1 ? "primary" : "warning",
+    hasButton: d?.interact,
+    deviceId: d._id,
+  }));
+
+  const ruleItems = rules?.length > 4 ? rules?.slice(0, 4) : rules;
 
   const handleChangeStatus = (deviceId: any) => async () => {
     await onUpdateDevice(deviceId);
+    // await getAllDevices();
     handleSetNewDevices(deviceId);
   };
 
@@ -111,7 +90,7 @@ const Home = () => {
         </View>
         <GroupButton />
         <View style={{ ...styles.container, ...styles.container2 }}>
-          {rules?.map((rule: any) => (
+          {ruleItems?.map((rule: any) => (
             <RuleCard
               rule={rule}
               key={rule._id}
@@ -131,7 +110,7 @@ export default Home;
 const styles = StyleSheet.create({
   home: {
     marginVertical: 10,
-    padding: 10
+    padding: 10,
   },
   container: {
     display: "flex",

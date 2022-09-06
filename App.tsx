@@ -14,6 +14,20 @@ import { ROUTES_AUTH, ROUTES_NOT_AUTH } from "./src/constant/routes";
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
+const makeStackNavigation = (screens: any) => () => {
+  return (
+    <Stack.Navigator initialRouteName={screens?.[0].name}>
+      {screens?.map((route: any) => (
+        <Stack.Screen
+          key={route.name}
+          name={route.name}
+          component={route.component}
+        />
+      ))}
+    </Stack.Navigator>
+  );
+};
+
 const Navigation = () => {
   const { auth, loading } = useContext(AuthContext) as any;
 
@@ -35,19 +49,41 @@ const Navigation = () => {
 
       {auth && (
         <BottomTab.Navigator initialRouteName={ROUTES_AUTH[0].name}>
-          {ROUTES_AUTH.map((route) => (
-            <BottomTab.Screen
-              key={route.name}
-              name={route.name}
-              component={route.component}
-              options={{
-                tabBarLabel: route.name,
-                tabBarIcon: ({ color, size }) => (
-                  <Icon name={route.icon} color={color} size={size} />
-                ),
-              }}
-            />
-          ))}
+          {ROUTES_AUTH.map((route) => {
+            if (route.type === "stack") {
+              return (
+                <BottomTab.Screen
+                  key={route.name}
+                  name={route.name}
+                  component={makeStackNavigation(route.screens) as any}
+                  options={{
+                    tabBarLabel: route?.name,
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon
+                        name={route?.screens?.[0].icon || ""}
+                        color={color}
+                        size={size}
+                      />
+                    ),
+                  }}
+                />
+              );
+            } else {
+              return (
+                <BottomTab.Screen
+                  key={route.name}
+                  name={route.name}
+                  component={route.component as any}
+                  options={{
+                    tabBarLabel: route.name,
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon name={route.icon as any} color={color} size={size} />
+                    ),
+                  }}
+                />
+              );
+            }
+          })}
         </BottomTab.Navigator>
       )}
     </NavigationContainer>

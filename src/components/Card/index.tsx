@@ -44,7 +44,7 @@ const AppCard = ({
             titleStyle={styles.buttonTitle}
           />
         ) : (
-          <Text style={styles.rightText}>Current: {value}</Text>
+          <Text style={styles.rightText}>{value}</Text>
         )}
       </LinearGradient>
     </View>
@@ -57,11 +57,15 @@ const styles = StyleSheet.create({
   container: {
     flexBasis: "100%",
     paddingVertical: 5,
+    shadowOffset: { width: 2, height: 4 },
+    shadowColor: "#171717",
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   subContainer: {
     borderRadius: 5,
     // backgroundColor: "white",
-    padding: 10,
+    padding: 5,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -77,19 +81,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   leftText: {
-    fontWeight: "500",
-    fontSize: 20,
+    // fontWeight: "500",
+    fontSize: 16,
     textAlign: "center",
     marginLeft: 10,
     color: "#fff",
   },
   rightText: {
-    fontSize: 24,
+    fontSize: 22,
     textAlign: "center",
-    color: "#fff"
+    color: "#fff",
   },
   button: {
-    padding: 5,
+    padding: 3,
     width: 80,
     backgroundColor: "#fff",
   },

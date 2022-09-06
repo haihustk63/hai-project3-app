@@ -28,4 +28,32 @@ export const ruleApi = {
       console.log(error);
     }
   },
+  addConditionRule: async (data: any) => {
+    try {
+      const result = await axios.post(API_ROUTES.RULE_CONDITION, data);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getAllRulesCondition: async () => {
+    try {
+      const result = await axios.get(API_ROUTES.RULE_CONDITION);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  deleteRuleCondition: async (ruleId: string) => {
+    try {
+      const result = await axios.delete(
+        `${API_ROUTES.RULE_CONDITION}/${ruleId}`
+      );
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

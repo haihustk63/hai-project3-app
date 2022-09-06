@@ -6,13 +6,16 @@ export const RuleContext = createContext({}) as any;
 const RuleProvider = ({ children }: { children: any }) => {
   const [onTimeSwitch, setOnTimeSwitch] = useState(false);
   const [offTimeSwitch, setOffTimeSwitch] = useState(false);
+  const [modeCondition, setModeCondition] = useState(false);
   const [error, setError] = useState(false);
   const [rules, setRules] = useState([]);
+  const [rulesCondition, setRulesCondition] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const getAllRules = async () => {
       await handleGetRules();
+      await handleGetRulesCondition();
     };
 
     getAllRules();
@@ -21,6 +24,7 @@ const RuleProvider = ({ children }: { children: any }) => {
   useEffect(() => {
     const getAllRules = async () => {
       await handleGetRules();
+      await handleGetRulesCondition();
       setRefresh(false);
     };
 
@@ -39,9 +43,28 @@ const RuleProvider = ({ children }: { children: any }) => {
     setError(false);
   };
 
+  const handleResetSwitchTime = () => {
+    setOnTimeSwitch(false);
+    setOffTimeSwitch(false);
+  };
+
+  const handleToggleMode = () => {
+    setModeCondition(!modeCondition);
+    setError(false);
+  };
+
   const handleAddRule = async (data: any) => {
     try {
       const result = await ruleService.addRule(data);
+      setRefresh(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAddRuleCondition = async (data: any) => {
+    try {
+      const result = await ruleService.addRuleCondition(data);
       setRefresh(true);
     } catch (error) {
       console.log(error);
@@ -58,9 +81,28 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
+  const handleGetRulesCondition = async () => {
+    try {
+      const result = await ruleService.getRulesCondition();
+      const data = result?.data;
+      setRulesCondition(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteRule = async (ruleId: string) => {
     try {
       await ruleService.deleteRule(ruleId);
+      setRefresh(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteRuleCondition = async (ruleId: string) => {
+    try {
+      await ruleService.deleteRuleCondition(ruleId);
       setRefresh(true);
     } catch (error) {
       console.log(error);
@@ -81,6 +123,12 @@ const RuleProvider = ({ children }: { children: any }) => {
         handleGetRules,
         setRefresh,
         handleDeleteRule,
+        handleDeleteRuleCondition,
+        modeCondition,
+        handleToggleMode,
+        handleResetSwitchTime,
+        rulesCondition,
+        handleAddRuleCondition,
       }}
     >
       {children}
