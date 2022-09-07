@@ -8,6 +8,7 @@ const RuleProvider = ({ children }: { children: any }) => {
   const [offTimeSwitch, setOffTimeSwitch] = useState(false);
   const [modeCondition, setModeCondition] = useState(false);
   const [error, setError] = useState(false);
+  const [errorRuleCondition, setErrorRuleCondition] = useState(false);
   const [rules, setRules] = useState([]);
   const [rulesCondition, setRulesCondition] = useState([]);
   const [refresh, setRefresh] = useState(false);
@@ -51,6 +52,7 @@ const RuleProvider = ({ children }: { children: any }) => {
   const handleToggleMode = () => {
     setModeCondition(!modeCondition);
     setError(false);
+    setErrorRuleCondition(false);
   };
 
   const handleAddRule = async (data: any) => {
@@ -118,6 +120,8 @@ const RuleProvider = ({ children }: { children: any }) => {
         handleToggleOnTime,
         error,
         setError,
+        errorRuleCondition,
+        setErrorRuleCondition,
         handleAddRule,
         rules,
         handleGetRules,

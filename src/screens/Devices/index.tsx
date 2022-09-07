@@ -1,5 +1,6 @@
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import AppButton from "src/components/AppButton";
 import AppCard from "src/components/Card";
 import { DeviceContext } from "src/context/DeviceContect";
 import useUpdateDeviceStatus from "../Home/hooks";
@@ -11,8 +12,9 @@ const DeviceByRoom = ({
   roomNumber: number;
   data: any;
 }) => {
-  const { getAllDevices } = useContext(DeviceContext);
+  const { getAllDevices, handleTurnOnAllDevices } = useContext(DeviceContext);
   const { onUpdateDevice } = useUpdateDeviceStatus();
+  const [turnOn, setTurnOn] = useState(false);
 
   const cardItems = data?.map((d: any) => ({
     title: d?.name,
@@ -27,9 +29,29 @@ const DeviceByRoom = ({
     await getAllDevices();
   };
 
+  const handleTurnOnAllDevicesByRoom = (room: number) => async () => {
+    if (turnOn) {
+
+      await handleTurnOnAllDevices(room, 0);
+      setTurnOn(false);
+    } else {
+      await handleTurnOnAllDevices(room, 1);
+      setTurnOn(true);
+    }
+  };
+
   return (
     <View style={{ ...styles.deviceByRoom, ...styles.shadow }}>
-      <Text style={styles.deviceByRoomText}>Room {roomNumber}</Text>
+      <View style={styles.roomTitle}>
+        <Text style={styles.deviceByRoomText}>Room {roomNumber}</Text>
+        <AppButton
+          title={turnOn ? "Turn off all" : "Turn on all"}
+          onPress={null}
+          buttonStyle={styles.turnOnAllBtn}
+          titleStyle={styles.turnOnAllBtnTitle}
+          type="outline"
+        />
+      </View>
       {cardItems?.map((item: any) => (
         <View key={item.deviceId}>
           <AppCard
@@ -100,7 +122,7 @@ const styles = StyleSheet.create({
   },
   homeByFloorText: {
     fontSize: 24,
-    fontWeight: "500"
+    fontWeight: "500",
   },
   homeByFloorTextWrap: {
     // backgroundColor: "#fff",
@@ -118,5 +140,17 @@ const styles = StyleSheet.create({
   deviceByRoomText: {
     fontSize: 18,
     marginBottom: 5,
+  },
+  roomTitle: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  turnOnAllBtn: {
+    padding: 3,
+    width: 100,
+  },
+  turnOnAllBtnTitle: {
+    fontSize: 12,
   },
 });

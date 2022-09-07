@@ -135,6 +135,15 @@ const DeviceProvider = ({ children }: { children: any }) => {
     }
   };
 
+  const handleTurnOnAllDevices = async (room: number, value: number) => {
+    try {
+      await deviceService.turnOnAllDevicesByRoom(room, value);
+      await getAllDevices();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <DeviceContext.Provider
       value={{
@@ -146,6 +155,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
         getAllDevices,
         setDevices,
         floorMap,
+        handleTurnOnAllDevices
       }}
     >
       {children}

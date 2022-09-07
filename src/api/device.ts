@@ -40,6 +40,13 @@ const deviceApi = {
       return result;
     } catch (error) {}
   },
+  turnOnAllDeviceByRoom: async (room: number, value: number) => {
+    try {
+      await axios.patch(API_ROUTES.DEVICE_WITH_ROOM(room), { value });
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
 export default deviceApi;

@@ -16,6 +16,10 @@ class DeviceService {
   updateDevice = async (deviceId: string, data?: any) => {
     return await deviceApi.updateDevice(deviceId, data);
   };
+
+  turnOnAllDevicesByRoom = async (room: number, value: number) => {
+    return await deviceApi.turnOnAllDeviceByRoom(room, value);
+  };
 }
 
 const deviceService = new DeviceService();

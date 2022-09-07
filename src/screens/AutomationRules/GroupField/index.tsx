@@ -34,6 +34,13 @@ const GroupField = () => {
 
   const { selectDataDevice = [] } = useContext(DeviceContext);
 
+  const { setErrorRuleCondition } = useContext(RuleContext);
+
+  // const handleOnChangeModeCondition: any = () => (field: any) => {
+  //   setErrorRuleCondition(false);
+  //   handleChange(field);
+  // };
+
   const {
     onTimeSwitch,
     offTimeSwitch,
@@ -41,7 +48,7 @@ const GroupField = () => {
     handleToggleOffTime,
     modeCondition,
     handleToggleMode,
-    handleResetSwitchTime
+    handleResetSwitchTime,
   } = useContext(RuleContext);
 
   const handleDateChange = (field: string) => (e: any, selectedDate: any) => {

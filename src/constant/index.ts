@@ -34,6 +34,7 @@ export const API_ROUTES = {
   USER_LOGIN: `${API_URL}/${API_NAMES.USER}/login`,
   DEVICE: `${API_URL}/${API_NAMES.DEVICE}`,
   DEVICE_WITH_ID: (id: string) => `${API_URL}/${API_NAMES.DEVICE}/${id}`,
+  DEVICE_WITH_ROOM: (room: number) => `${API_URL}/${API_NAMES.DEVICE}/room/${room}`,
   DEVICE_TYPE: `${API_URL}/${API_NAMES.DEVICE}/type`,
   RULE: `${API_URL}/${API_NAMES.RULE}`,
   RULE_WITH_ID: (id: string) => `${API_URL}/${API_NAMES.RULE}/${id}`,

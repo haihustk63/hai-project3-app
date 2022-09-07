@@ -52,6 +52,9 @@ const AutomationRules = () => {
     setError,
     handleAddRule,
     modeCondition,
+    rulesCondition,
+    errorRuleCondition,
+    setErrorRuleCondition,
     handleAddRuleCondition,
   } = useContext(RuleContext);
 
@@ -62,15 +65,29 @@ const AutomationRules = () => {
   const handleSubmitForm = async (values: any) => {
     if (modeCondition) {
       const { preDevice, preValue, afterDevice, afterValue, name } = values;
-      const rule = {
-        name,
-        preDeviceId: preDevice,
-        preValue: preValue === "on" ? 1 : 0,
-        afterDeviceId: afterDevice,
-        afterValue: afterValue === "on" ? 1 : 0,
-      };
 
-      await handleAddRuleCondition(rule);
+      const index = rulesCondition?.findIndex(
+        (r: any) =>
+          r.preDeviceId === preDevice &&
+          r.preValue === preValue &&
+          r.afterDeviceId === afterDevice &&
+          r.afterValue === afterValue
+      );
+
+      if (index < 0) {
+        const rule = {
+          name,
+          preDeviceId: preDevice,
+          preValue: preValue === "on" ? 1 : 0,
+          afterDeviceId: afterDevice,
+          afterValue: afterValue === "on" ? 1 : 0,
+        };
+
+        await handleAddRuleCondition(rule);
+      } else {
+        setErrorRuleCondition(true);
+        return;
+      }
     } else {
       const { onTime, offTime, device, name } = values;
 
@@ -149,6 +166,9 @@ const AutomationRules = () => {
                   Please choose on time or off time or both (on time is
                   different from off time)
                 </Text>
+              )}
+              {errorRuleCondition && modeCondition && (
+                <Text style={styles.messageError}>This rule is existed!</Text>
               )}
               <AppButton
                 title="OK"
