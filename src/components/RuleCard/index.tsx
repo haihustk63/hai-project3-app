@@ -1,6 +1,7 @@
 import { Divider } from "@rneui/themed";
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+
 import AppButton from "../AppButton";
 
 const RuleCard = ({

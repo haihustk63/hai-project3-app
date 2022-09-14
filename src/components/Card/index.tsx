@@ -1,8 +1,8 @@
-import { Divider } from "@rneui/themed";
 import { StyleSheet, Text, View } from "react-native";
-import AppButton from "../AppButton";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
+
+import AppButton from "../AppButton";
 
 const AppCard = ({
   title,

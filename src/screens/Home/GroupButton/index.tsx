@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
+
 import AppButton from "../../../components/AppButton";
 import { SCREEN_NAME } from "../../../constant";
 

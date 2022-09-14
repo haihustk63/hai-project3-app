@@ -1,4 +1,5 @@
 import { StyleSheet, View } from "react-native";
+
 import AppButton from "src/components/AppButton";
 import useLogout from "./hooks/useLogout";
 

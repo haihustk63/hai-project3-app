@@ -56,7 +56,7 @@ const AutomationRules = () => {
     errorRuleCondition,
     setErrorRuleCondition,
     handleAddRuleCondition,
-  } = useContext(RuleContext);
+  } = useContext(RuleContext) as any;
 
   const navigate = useNavigation();
 

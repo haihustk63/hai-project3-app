@@ -10,9 +10,9 @@ import useUpdateDeviceStatus from "./hooks";
 
 const Home = () => {
   const { devices, getAllDevices, setDevices } =
-    useContext(DeviceContext);
+    useContext(DeviceContext) as any;
 
-  const { rules, handleDeleteRule, handleGetRules } = useContext(RuleContext);
+  const { rules, handleDeleteRule, handleGetRules } = useContext(RuleContext) as any;
   const [refreshing, setRefreshing] = useState(false);
 
   const { onUpdateDevice } = useUpdateDeviceStatus();

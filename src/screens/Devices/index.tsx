@@ -1,5 +1,6 @@
 import { useContext, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+
 import AppButton from "src/components/AppButton";
 import AppCard from "src/components/Card";
 import { DeviceContext } from "src/context/DeviceContect";
@@ -12,7 +13,7 @@ const DeviceByRoom = ({
   roomNumber: number;
   data: any;
 }) => {
-  const { getAllDevices, handleTurnOnAllDevices } = useContext(DeviceContext);
+  const { getAllDevices, handleTurnOnAllDevices } = useContext(DeviceContext) as any;
   const { onUpdateDevice } = useUpdateDeviceStatus();
   const [turnOn, setTurnOn] = useState(false);
 
@@ -29,16 +30,16 @@ const DeviceByRoom = ({
     await getAllDevices();
   };
 
-  const handleTurnOnAllDevicesByRoom = (room: number) => async () => {
-    if (turnOn) {
+  // const handleTurnOnAllDevicesByRoom = (room: number) => async () => {
+  //   if (turnOn) {
 
-      await handleTurnOnAllDevices(room, 0);
-      setTurnOn(false);
-    } else {
-      await handleTurnOnAllDevices(room, 1);
-      setTurnOn(true);
-    }
-  };
+  //     await handleTurnOnAllDevices(room, 0);
+  //     setTurnOn(false);
+  //   } else {
+  //     await handleTurnOnAllDevices(room, 1);
+  //     setTurnOn(true);
+  //   }
+  // };
 
   return (
     <View style={{ ...styles.deviceByRoom, ...styles.shadow }}>
@@ -94,7 +95,7 @@ const HomeByFloor = ({
 };
 
 const Devices = () => {
-  const { floorMap } = useContext(DeviceContext);
+  const { floorMap } = useContext(DeviceContext) as any;
 
   const renderFloor = useMemo(() => {
     const renderList: any[] = [];

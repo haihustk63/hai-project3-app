@@ -1,6 +1,6 @@
+import { useContext, useEffect, useState } from "react";
 import { Divider } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
-import { useContext, useEffect, useState } from "react";
 import {
   RefreshControl,
   ScrollView,
@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+
 import AppButton from "src/components/AppButton";
 import AppSlider from "src/components/AppSlider";
 import { MIN_MAX_MOISTURE } from "src/constant";
@@ -23,7 +24,7 @@ const Garden = () => {
   const [moistureDevice, setMoistureDevice] = useState();
   const [waterPumpDevice, setWaterPumpDevice] = useState();
 
-  const { devices, getAllDevices } = useContext(DeviceContext);
+  const { devices, getAllDevices } = useContext(DeviceContext) as any;
 
   useEffect(() => {
     if (devices?.length) {

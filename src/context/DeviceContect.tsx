@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { io } from "socket.io-client";
+
 import { API_URL_EXPORT } from "src/constant";
 import deviceService from "src/services/device";
 import { AuthContext } from "./AuthContext";
-import { io } from "socket.io-client";
 
 const socket = io(API_URL_EXPORT);
 

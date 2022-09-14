@@ -66,11 +66,6 @@ export const ROUTES_AUTH = [
     component: Garden,
     icon: "pagelines",
   },
-  // {
-  //   name: SCREEN_NAME.ADD_NEW_DEVICE,
-  //   component: AddNewDevice,
-  //   icon: "lightbulb-o",
-  // },
   {
     name: SCREEN_NAME.PROFILE,
     component: Profile,

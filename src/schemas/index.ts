@@ -1,4 +1,4 @@
-import { string, object, number } from "yup";
+import { string, object } from "yup";
 
 export const ADD_NEW_DEVICE_FIELD = {
   NAME: "name",

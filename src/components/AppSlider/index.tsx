@@ -1,6 +1,5 @@
 import { Slider } from "@rneui/base";
 import { StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 
 const AppSlider = ({
   value = 0,
@@ -24,9 +23,6 @@ const AppSlider = ({
       step={step}
       thumbStyle={styles.thumb}
       trackStyle={styles.track}
-    //   thumbProps={{
-    //     children: <Icon name="heart" size={35} color="#EF629F" />,
-    //   }}
     />
   );
 };

@@ -1,10 +1,11 @@
+import { useContext } from "react";
 import { Input } from "@rneui/themed";
 import { useFormikContext } from "formik";
 import { StyleSheet, View } from "react-native";
-import { ADD_NEW_DEVICE_FIELD } from "../../../schemas";
 import RNPickerSelect from "react-native-picker-select";
+
+import { ADD_NEW_DEVICE_FIELD } from "../../../schemas";
 import ErrorMessage from "src/components/ErrorMessage";
-import { useContext, useEffect, useState } from "react";
 import { DeviceContext } from "src/context/DeviceContect";
 
 const { NAME, TYPE } = ADD_NEW_DEVICE_FIELD;
@@ -13,7 +14,7 @@ const GroupField = () => {
   const { values, handleChange, handleBlur, errors, touched } =
     useFormikContext();
 
-  const { deviceTypes = [], loading } = useContext(DeviceContext);
+  const { deviceTypes = [], loading } = useContext(DeviceContext) as any;
 
   if(loading) return null;
 

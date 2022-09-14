@@ -5,11 +5,11 @@ import { useContext } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import Icon from "react-native-vector-icons/FontAwesome";
+
 import AuthProvider, { AuthContext } from "src/context/AuthContext";
 import DeviceProvider from "src/context/DeviceContect";
 import RuleProvider from "src/context/RuleContext";
 import { ROUTES_AUTH, ROUTES_NOT_AUTH } from "./src/constant/routes";
-// const { ADD_AUTOMATION_RULE } = BUTTON_TITLE;
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();

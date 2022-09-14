@@ -1,13 +1,13 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { useContext, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  ViewPagerAndroid,
 } from "react-native";
+
 import AppButton from "src/components/AppButton";
 import RuleCard from "src/components/RuleCard";
 import { SCREEN_NAME } from "src/constant";
@@ -21,7 +21,7 @@ const Rules = () => {
     handleDeleteRule,
     setRefresh,
     handleDeleteRuleCondition,
-  } = useContext(RuleContext);
+  } = useContext(RuleContext) as any;
 
   const [refreshing, setRefreshing] = useState(false);
 

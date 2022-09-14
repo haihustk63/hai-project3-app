@@ -1,9 +1,10 @@
+import { useContext } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Input, Switch } from "@rneui/themed";
 import { useFormikContext } from "formik";
-import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+
 import ErrorMessage from "src/components/ErrorMessage";
 import { DEVICE_VALUE_OPTIONS } from "src/constant";
 import { DeviceContext } from "src/context/DeviceContect";
@@ -32,14 +33,7 @@ const GroupField = () => {
     resetForm,
   } = useFormikContext();
 
-  const { selectDataDevice = [] } = useContext(DeviceContext);
-
-  const { setErrorRuleCondition } = useContext(RuleContext);
-
-  // const handleOnChangeModeCondition: any = () => (field: any) => {
-  //   setErrorRuleCondition(false);
-  //   handleChange(field);
-  // };
+  const { selectDataDevice = [] } = useContext(DeviceContext) as any;
 
   const {
     onTimeSwitch,
@@ -49,7 +43,7 @@ const GroupField = () => {
     modeCondition,
     handleToggleMode,
     handleResetSwitchTime,
-  } = useContext(RuleContext);
+  } = useContext(RuleContext) as any;
 
   const handleDateChange = (field: string) => (e: any, selectedDate: any) => {
     const currentDate = selectedDate;

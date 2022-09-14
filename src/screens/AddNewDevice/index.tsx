@@ -1,7 +1,7 @@
+import { useContext, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "@rneui/themed";
 import { Formik } from "formik";
-import { useContext, useRef } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -10,6 +10,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+
 import AppButton from "src/components/AppButton";
 import { SCREEN_NAME } from "src/constant";
 import { DeviceContext } from "src/context/DeviceContect";
@@ -24,8 +25,7 @@ const initialValues = {
 };
 
 const AddNewDevice = () => {
-  const { addNewDevice } = useContext(DeviceContext);
-  const { deviceTypes = [] } = useContext(DeviceContext);
+  const { addNewDevice, deviceTypes = [] } = useContext(DeviceContext) as any;
   const navigate = useNavigation();
   const ref = useRef(null) as any;
 
@@ -59,10 +59,7 @@ const AddNewDevice = () => {
         >
           {({
             values,
-            setFieldValue,
-            handleChange,
             handleSubmit,
-            handleBlur,
           }) => (
             <View style={styles.container}>
               <Image
