@@ -66,9 +66,4 @@ export const ROUTES_AUTH = [
     component: Garden,
     icon: "pagelines",
   },
-  {
-    name: SCREEN_NAME.PROFILE,
-    component: Profile,
-    icon: "user-o",
-  },
 ];

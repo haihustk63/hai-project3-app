@@ -38,11 +38,12 @@ const Garden = () => {
 
       setMoistureDevice(findMoistureDevice);
       setWaterPumpDevice(findWaterPumpDevice);
-
+      
+      
       const {
         config: { minThreshold, desireThreshold },
       } = findMoistureDevice || {};
-
+      
       setMinPercent(minThreshold);
       setMaxPercent(desireThreshold);
     }

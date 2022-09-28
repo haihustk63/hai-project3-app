@@ -59,6 +59,11 @@ const RuleProvider = ({ children }: { children: any }) => {
     try {
       const result = await ruleService.addRule(data);
       setRefresh(true);
+      setModeCondition(false);
+      setOnTimeSwitch(false);
+      setOffTimeSwitch(false);
+      setError(false);
+      setErrorRuleCondition(false);
     } catch (error) {
       console.log(error);
     }
@@ -68,6 +73,11 @@ const RuleProvider = ({ children }: { children: any }) => {
     try {
       const result = await ruleService.addRuleCondition(data);
       setRefresh(true);
+      setModeCondition(false);
+      setOnTimeSwitch(false);
+      setOffTimeSwitch(false);
+      setError(false);
+      setErrorRuleCondition(false);
     } catch (error) {
       console.log(error);
     }

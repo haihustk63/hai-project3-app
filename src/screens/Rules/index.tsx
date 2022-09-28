@@ -98,5 +98,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginBottom: 10,
   },
-  buttonStyle: {},
+  buttonStyle: {
+    marginBottom: 20
+  },
 });

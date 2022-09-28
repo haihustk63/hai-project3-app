@@ -64,13 +64,20 @@ const AutomationRules = () => {
 
   const handleSubmitForm = async (values: any) => {
     if (modeCondition) {
-      const { preDevice, preValue, afterDevice, afterValue, name } = values;
+      let { preDevice, preValue, afterDevice, afterValue, name } = values;
+      preValue = preValue === "on" ? 1 : 0;
+      afterValue = afterValue === "on" ? 1 : 0;
+
+      if (preDevice === afterDevice) {
+        setErrorRuleCondition(true);
+        return;
+      }
 
       const index = rulesCondition?.findIndex(
         (r: any) =>
-          r.preDeviceId === preDevice &&
+          r.preDeviceId?._id === preDevice &&
           r.preValue === preValue &&
-          r.afterDeviceId === afterDevice &&
+          r.afterDeviceId?._id === afterDevice &&
           r.afterValue === afterValue
       );
 
@@ -78,9 +85,9 @@ const AutomationRules = () => {
         const rule = {
           name,
           preDeviceId: preDevice,
-          preValue: preValue === "on" ? 1 : 0,
+          preValue,
           afterDeviceId: afterDevice,
-          afterValue: afterValue === "on" ? 1 : 0,
+          afterValue,
         };
 
         await handleAddRuleCondition(rule);
@@ -145,13 +152,7 @@ const AutomationRules = () => {
           }
           innerRef={ref}
         >
-          {({
-            values,
-            setFieldValue,
-            handleChange,
-            handleSubmit,
-            handleBlur,
-          }) => (
+          {({ values, handleSubmit }) => (
             <View style={styles.container}>
               <Image
                 source={{
@@ -168,7 +169,9 @@ const AutomationRules = () => {
                 </Text>
               )}
               {errorRuleCondition && modeCondition && (
-                <Text style={styles.messageError}>This rule is existed!</Text>
+                <Text style={styles.messageError}>
+                  This rule is existed or both devices are the same!
+                </Text>
               )}
               <AppButton
                 title="OK"

@@ -30,24 +30,23 @@ const DeviceByRoom = ({
     await getAllDevices();
   };
 
-  // const handleTurnOnAllDevicesByRoom = (room: number) => async () => {
-  //   if (turnOn) {
-
-  //     await handleTurnOnAllDevices(room, 0);
-  //     setTurnOn(false);
-  //   } else {
-  //     await handleTurnOnAllDevices(room, 1);
-  //     setTurnOn(true);
-  //   }
-  // };
+  const handleTurnOnAllDevicesByRoom = (room: number) => async () => {
+    if (turnOn) {
+      await handleTurnOnAllDevices(room, 0);
+      setTurnOn(false);
+    } else {
+      await handleTurnOnAllDevices(room, 1);
+      setTurnOn(true);
+    }
+  };
 
   return (
     <View style={{ ...styles.deviceByRoom, ...styles.shadow }}>
       <View style={styles.roomTitle}>
         <Text style={styles.deviceByRoomText}>Room {roomNumber}</Text>
         <AppButton
-          title={turnOn ? "Turn off all" : "Turn on all"}
-          onPress={null}
+          title={turnOn ? "Turn off all light" : "Turn on all light"}
+          onPress={handleTurnOnAllDevicesByRoom(roomNumber)}
           buttonStyle={styles.turnOnAllBtn}
           titleStyle={styles.turnOnAllBtnTitle}
           type="outline"
@@ -126,9 +125,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   homeByFloorTextWrap: {
-    // backgroundColor: "#fff",
-    // borderRadius: 5,
-    // paddingHorizontal: 10,
     marginBottom: 10,
   },
   deviceByRoom: {
@@ -149,7 +145,7 @@ const styles = StyleSheet.create({
   },
   turnOnAllBtn: {
     padding: 3,
-    width: 100,
+    width: 150,
   },
   turnOnAllBtnTitle: {
     fontSize: 12,
