@@ -19,8 +19,12 @@ const useLogin = () => {
     try {
       setLoading(true);
       const res = (await userService.login(data)) as any;
-      await SecureGateway.save(res.data);
-      onSuccess && onSuccess(res.data);
+      if (res.status === 200) {
+        await SecureGateway.save(res.data);
+        onSuccess && onSuccess(res.data);
+      } else {
+        onFailed && onFailed("Account does not exist");
+      }
     } catch (error) {
       onFailed && onFailed();
     } finally {

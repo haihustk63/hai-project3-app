@@ -45,7 +45,7 @@ const DeviceByRoom = ({
       <View style={styles.roomTitle}>
         <Text style={styles.deviceByRoomText}>Room {roomNumber}</Text>
         <AppButton
-          title={turnOn ? "Turn off all light" : "Turn on all light"}
+          title={turnOn ? "Turn off all lights" : "Turn on all lights"}
           onPress={handleTurnOnAllDevicesByRoom(roomNumber)}
           buttonStyle={styles.turnOnAllBtn}
           titleStyle={styles.turnOnAllBtnTitle}

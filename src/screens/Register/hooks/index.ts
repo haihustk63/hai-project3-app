@@ -15,8 +15,12 @@ const useRegister = () => {
   }) => {
     try {
       setLoading(true);
-      await userService.register(data);
-      onSuccess && onSuccess();
+      const res = (await userService.register(data)) as any;
+      if (!res) {
+        onSuccess && onSuccess();
+      } else {
+        onFailed && onFailed("Email existed");
+      }
     } catch (error) {
       onFailed && onFailed();
     } finally {

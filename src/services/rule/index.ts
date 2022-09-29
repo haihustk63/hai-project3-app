@@ -5,8 +5,8 @@ class RuleService {
     await ruleApi.addNewRule(data);
   };
 
-  getRules = async () => {
-    return await ruleApi.getAllRules();
+  getRules = async (personId: string) => {
+    return await ruleApi.getAllRules(personId);
   };
 
   deleteRule = async (ruleId: string) => {
@@ -17,8 +17,8 @@ class RuleService {
     await ruleApi.addConditionRule(data);
   };
 
-  getRulesCondition = async () => {
-    return await ruleApi.getAllRulesCondition();
+  getRulesCondition = async (personId: string) => {
+    return await ruleApi.getAllRulesCondition(personId);
   };
 
   deleteRuleCondition = async (ruleId: string) => {

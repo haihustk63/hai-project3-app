@@ -8,7 +8,7 @@ export const userApi = {
       const result = await axios.post(API_ROUTES.USER_LOGIN, data);
       return result;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   },
 
@@ -16,7 +16,7 @@ export const userApi = {
     try {
       await axios.post(API_ROUTES.USER, data);
     } catch (error) {
-      console.log(error);
+      return error;
     }
   },
 };

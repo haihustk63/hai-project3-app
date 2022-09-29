@@ -1,5 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import RuleCard from "src/components/RuleCard";
 import { DeviceContext } from "src/context/DeviceContect";
 import { RuleContext } from "src/context/RuleContext";
@@ -7,12 +13,13 @@ import Card from "../../components/Card";
 import GroupButton from "./GroupButton";
 import useUpdateDeviceStatus from "./hooks";
 
-
 const Home = () => {
-  const { devices, getAllDevices, setDevices } =
-    useContext(DeviceContext) as any;
+  const { devices, getAllDevices, setDevices } = useContext(
+    DeviceContext
+  ) as any;
 
-  const { rules, handleDeleteRule, handleGetRules } = useContext(RuleContext) as any;
+  const { rules, handleDeleteRule, handleGetRules } =
+    useContext(RuleContext) as any;
   const [refreshing, setRefreshing] = useState(false);
 
   const { onUpdateDevice } = useUpdateDeviceStatus();
@@ -33,17 +40,12 @@ const Home = () => {
     [devices]
   );
 
-  useEffect(() => {
-    if (devices?.length) {
-      setRefreshing(false);
-    }
-  }, [devices]);
-
   const handleOnRefresh = async () => {
     setRefreshing(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await getAllDevices();
     await handleGetRules();
+    setRefreshing(false);
   };
 
   const selectItems = devices?.length > 4 ? devices?.slice(0, 4) : devices;
@@ -60,7 +62,6 @@ const Home = () => {
 
   const handleChangeStatus = (deviceId: any) => async () => {
     await onUpdateDevice(deviceId);
-    // await getAllDevices();
     handleSetNewDevices(deviceId);
   };
 
@@ -76,6 +77,7 @@ const Home = () => {
       }
     >
       <View style={styles.home}>
+        {devices?.length === 0 && <Text>You have no devices!</Text>}
         <View style={styles.container}>
           {cardItems?.map((item: any) => (
             <Card
@@ -89,6 +91,7 @@ const Home = () => {
           ))}
         </View>
         <GroupButton />
+        {ruleItems?.length === 0 && <Text>You have no time rules!</Text>}
         <View style={{ ...styles.container, ...styles.container2 }}>
           {ruleItems?.map((rule: any) => (
             <RuleCard

@@ -24,7 +24,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
     try {
       setLoading(true);
       const result = await deviceService.getAllDevices({ personId: info.id });
-
+      
       const data = result?.data;
 
       const selectData = data?.map((device: any) => ({

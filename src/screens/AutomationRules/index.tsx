@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import AppButton from "src/components/AppButton";
 import { SCREEN_NAME } from "src/constant";
+import { AuthContext } from "src/context/AuthContext";
 import { RuleContext } from "src/context/RuleContext";
 
 import {
@@ -58,11 +59,17 @@ const AutomationRules = () => {
     handleAddRuleCondition,
   } = useContext(RuleContext) as any;
 
+  const { info = {} } = useContext(AuthContext) as any;
+
   const navigate = useNavigation();
 
   const ref = useRef(null) as any;
 
   const handleSubmitForm = async (values: any) => {
+    if (info?.id) {
+      return;
+    }
+
     if (modeCondition) {
       let { preDevice, preValue, afterDevice, afterValue, name } = values;
       preValue = preValue === "on" ? 1 : 0;
@@ -88,6 +95,7 @@ const AutomationRules = () => {
           preValue,
           afterDeviceId: afterDevice,
           afterValue,
+          personId: info.id,
         };
 
         await handleAddRuleCondition(rule);
@@ -116,7 +124,13 @@ const AutomationRules = () => {
       const cronOnTime = `00 ${onTimeMinute} ${onTimeHour} * * *`;
       const cronOffTime = `00 ${offTimeMinute} ${offTimeHour} * * *`;
 
-      const rule = { name, device, cronOnTime, cronOffTime } as any;
+      const rule = {
+        name,
+        device,
+        cronOnTime,
+        cronOffTime,
+        personId: info.id,
+      } as any;
 
       if (!onTimeSwitch && !offTimeSwitch) {
         setError(true);

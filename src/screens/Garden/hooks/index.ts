@@ -5,7 +5,7 @@ import deviceService from "src/services/device";
 
 export const useUpdateMoistureConfig = () => {
   const [loading, setLoading] = useState(false);
-  const { getAllDevices } = useContext(DeviceContext);
+  const { getAllDevices } = useContext(DeviceContext) as any;
 
   const handleUpdateMoistureConfig = async (deviceId: string, data?: any) => {
     try {

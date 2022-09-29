@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import AppButton from "src/components/AppButton";
 import { SCREEN_NAME } from "src/constant";
 import { registerSchema, REGISTER_FIELD } from "../../schemas";
@@ -30,7 +31,11 @@ const Register = () => {
     navigate.navigate(SCREEN_NAME.LOGIN as any);
   };
 
-  const handleFailed = () => {};
+  const handleFailed = (error?: string) => {
+    if (error) {
+      showMessage({ message: error, type: "danger" });
+    }
+  };
 
   const handleSubmitForm = async (data: any) => {
     const { email, password } = data;
@@ -52,20 +57,14 @@ const Register = () => {
           onSubmit={handleSubmitForm}
           validationSchema={registerSchema}
         >
-          {({
-            values,
-            setFieldValue,
-            handleChange,
-            handleSubmit,
-            handleBlur,
-          }) => (
+          {({ handleSubmit }) => (
             <View style={styles.container}>
               <Text style={styles.textLogin}>REGISTER</Text>
               <GroupField />
               <AppButton
                 title="Register"
                 onPress={handleSubmit}
-                style={styles.button}
+                buttonStyle={styles.button}
               />
             </View>
           )}

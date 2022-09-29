@@ -1,5 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import ruleService from "src/services/rule";
+import { AuthContext } from "./AuthContext";
 
 export const RuleContext = createContext({}) as any;
 
@@ -13,10 +14,14 @@ const RuleProvider = ({ children }: { children: any }) => {
   const [rulesCondition, setRulesCondition] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
+  const { info = {} } = useContext(AuthContext) as any;
+
   useEffect(() => {
     const getAllRules = async () => {
-      await handleGetRules();
-      await handleGetRulesCondition();
+      if (info?.id) {
+        await handleGetRules(info.id);
+        await handleGetRulesCondition(info.id);
+      }
     };
 
     getAllRules();
@@ -24,15 +29,17 @@ const RuleProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const getAllRules = async () => {
-      await handleGetRules();
-      await handleGetRulesCondition();
+      if (info?.id) {
+        await handleGetRules(info.id);
+        await handleGetRulesCondition(info.id);
+      }
       setRefresh(false);
     };
 
-    if (refresh) {
+    if (refresh || info) {
       getAllRules();
     }
-  }, [refresh]);
+  }, [refresh, info]);
 
   const handleToggleOnTime = () => {
     setOnTimeSwitch(!onTimeSwitch);
@@ -83,9 +90,9 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
-  const handleGetRules = async () => {
+  const handleGetRules = async (personId: string) => {
     try {
-      const result = await ruleService.getRules();
+      const result = await ruleService.getRules(personId);
       const data = result?.data;
       setRules(data);
     } catch (error) {
@@ -93,9 +100,9 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
-  const handleGetRulesCondition = async () => {
+  const handleGetRulesCondition = async (personId: string) => {
     try {
-      const result = await ruleService.getRulesCondition();
+      const result = await ruleService.getRulesCondition(personId);
       const data = result?.data;
       setRulesCondition(data);
     } catch (error) {

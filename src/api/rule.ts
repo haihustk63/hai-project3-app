@@ -12,9 +12,9 @@ export const ruleApi = {
     }
   },
 
-  getAllRules: async () => {
+  getAllRules: async (personId: string) => {
     try {
-      const result = await axios.get(API_ROUTES.RULE);
+      const result = await axios.get(API_ROUTES.RULE, { params: { personId } });
       return result;
     } catch (error) {
       console.log(error);
@@ -38,9 +38,11 @@ export const ruleApi = {
     }
   },
 
-  getAllRulesCondition: async () => {
+  getAllRulesCondition: async (personId: string) => {
     try {
-      const result = await axios.get(API_ROUTES.RULE_CONDITION);
+      const result = await axios.get(API_ROUTES.RULE_CONDITION, {
+        params: { personId },
+      });
       return result;
     } catch (error) {
       console.log(error);

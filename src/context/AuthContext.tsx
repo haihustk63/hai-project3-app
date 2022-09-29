@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import SecureGateway from "src/store";
-
-export const AuthContext = createContext({});
+ 
+export const AuthContext = createContext({}) as any;
 
 const AuthProvider = ({ children }: { children: any }) => {
   const [auth, setAuth] = useState(false);

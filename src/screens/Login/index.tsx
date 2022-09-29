@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import AppButton from "src/components/AppButton";
 import { SCREEN_NAME } from "src/constant";
 import { UserInfo } from "src/store";
@@ -29,7 +30,9 @@ const Login = () => {
 
   const handleLoginSuccess = async (data: UserInfo) => {};
 
-  const handleLoginFailed = () => {};
+  const handleLoginFailed = (message: string) => {
+    showMessage({ message, type: "danger" });
+  };
 
   const handleSubmitForm = async (data: any) => {
     await onLogin({
@@ -55,13 +58,7 @@ const Login = () => {
           onSubmit={handleSubmitForm}
           validationSchema={loginSchema}
         >
-          {({
-            values,
-            setFieldValue,
-            handleChange,
-            handleSubmit,
-            handleBlur,
-          }) => (
+          {({ handleSubmit }) => (
             <View style={styles.container}>
               <Text style={styles.textLogin}>LOGIN</Text>
               <GroupField />
@@ -69,11 +66,13 @@ const Login = () => {
                 title="Login"
                 onPress={handleSubmit}
                 style={styles.button}
+                buttonStyle={styles.button}
               />
               <AppButton
                 title="Register now"
                 onPress={handleRegister}
-                style={{ ...styles.button, ...styles.buttonRegister }}
+                style={{ ...styles.buttonRegister }}
+                buttonStyle={styles.button}
                 type="clear"
               />
             </View>
