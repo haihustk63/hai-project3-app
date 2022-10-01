@@ -12,6 +12,7 @@ const AppCard = ({
   onPress,
   typeButton,
   style,
+  info,
 }: {
   title: string;
   value: number | string;
@@ -20,6 +21,7 @@ const AppCard = ({
   onPress?: any;
   typeButton?: any;
   style?: any;
+  info?: string;
 }) => {
   return (
     <View style={{ ...styles.container, ...style }}>
@@ -27,25 +29,28 @@ const AppCard = ({
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         colors={["#EECDA3", "#EF629F"]}
-        style={styles.subContainer}
+        style={styles.linearContainer}
       >
-        <View style={styles.leftContainer}>
-          <Icon name="lightbulb-o" size={28} color="#fff" />
-          <Text style={styles.leftText}>{title}</Text>
+        <View style={styles.subContainer}>
+          <View style={styles.leftContainer}>
+            <Icon name="lightbulb-o" size={28} color="#fff" />
+            <Text style={styles.leftText}>{title}</Text>
+          </View>
+          {/* <Divider style={styles.divider} /> */}
+          {hasButton ? (
+            <AppButton
+              title={String(value)}
+              onPress={onPress}
+              color={buttonColor}
+              type={typeButton}
+              buttonStyle={styles.button}
+              titleStyle={styles.buttonTitle}
+            />
+          ) : (
+            <Text style={styles.rightText}>{value}</Text>
+          )}
         </View>
-        {/* <Divider style={styles.divider} /> */}
-        {hasButton ? (
-          <AppButton
-            title={String(value)}
-            onPress={onPress}
-            color={buttonColor}
-            type={typeButton}
-            buttonStyle={styles.button}
-            titleStyle={styles.buttonTitle}
-          />
-        ) : (
-          <Text style={styles.rightText}>{value}</Text>
-        )}
+        {!!info && <Text style={styles.linearContainer.infoText}>{info}</Text>}
       </LinearGradient>
     </View>
   );
@@ -62,9 +67,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
-  subContainer: {
+  linearContainer: {
     borderRadius: 5,
-    // backgroundColor: "white",
+    padding: 5,
+    infoText: {
+      color: "white",
+    },
+  },
+  subContainer: {
     padding: 5,
     display: "flex",
     flexDirection: "row",

@@ -7,6 +7,7 @@ import { SCREEN_NAME } from ".";
 import AutomationRules from "../screens/AutomationRules";
 import Devices from "src/screens/Devices";
 import Rules from "src/screens/Rules";
+import AddNewDevice from "src/screens/AddNewDevice";
 
 // export const SCREEN_NAME = {
 //   HOME: "Home",
@@ -65,6 +66,29 @@ export const ROUTES_AUTH = [
     name: SCREEN_NAME.GARDEN,
     component: Garden,
     icon: "pagelines",
+  },
+  {
+    name: SCREEN_NAME.PROFILE,
+    component: Profile,
+    icon: "user-o",
+  },
+];
+
+export const ROUTES_AUTH_ADMIN = [
+  {
+    type: "stack",
+    name: "Home",
+    screens: [
+      {
+        name: SCREEN_NAME.DEVICES,
+        component: Devices,
+        icon: "lightbulb-o",
+      },
+      {
+        name: SCREEN_NAME.ADD_NEW_DEVICE,
+        component: AddNewDevice,
+      },
+    ],
   },
   {
     name: SCREEN_NAME.PROFILE,

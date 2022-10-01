@@ -7,16 +7,19 @@ import RNPickerSelect from "react-native-picker-select";
 import { ADD_NEW_DEVICE_FIELD } from "../../../schemas";
 import ErrorMessage from "src/components/ErrorMessage";
 import { DeviceContext } from "src/context/DeviceContect";
+import useGetUsers from "../hooks/useGetUsers";
 
-const { NAME, TYPE } = ADD_NEW_DEVICE_FIELD;
+const { NAME, TYPE, PERSON, PORT, FLOOR, ROOM } = ADD_NEW_DEVICE_FIELD;
 
 const GroupField = () => {
   const { values, handleChange, handleBlur, errors, touched } =
     useFormikContext();
 
+  const { users = [] } = useGetUsers();
+
   const { deviceTypes = [], loading } = useContext(DeviceContext) as any;
 
-  if(loading) return null;
+  if (loading) return null;
 
   return (
     <View style={styles.container}>
@@ -43,6 +46,50 @@ const GroupField = () => {
         field={TYPE}
         style={{ marginTop: 24 }}
       />
+
+      <Input
+        value={(values as any)[PORT]}
+        placeholder="Enter device port"
+        inputStyle={styles.input}
+        inputContainerStyle={styles.inputContainer}
+        onChangeText={handleChange(PORT)}
+        onBlur={handleBlur(PORT)}
+      />
+      <ErrorMessage errors={errors} touched={touched} field={PORT} />
+
+      <RNPickerSelect
+        onValueChange={handleChange(PERSON)}
+        items={users}
+        placeholder={{ label: "Select user", value: "" }}
+        value={(values as any)[PERSON] || ""}
+        style={pickerStyle}
+      />
+      <ErrorMessage
+        errors={errors}
+        touched={touched}
+        field={PERSON}
+        style={{ marginTop: 24 }}
+      />
+
+      <Input
+        value={(values as any)[FLOOR]}
+        placeholder="Enter device floor"
+        inputStyle={styles.input}
+        inputContainerStyle={styles.inputContainer}
+        onChangeText={handleChange(FLOOR)}
+        onBlur={handleBlur(FLOOR)}
+      />
+      <ErrorMessage errors={errors} touched={touched} field={FLOOR} />
+
+      <Input
+        value={(values as any)[ROOM]}
+        placeholder="Enter device room"
+        inputStyle={styles.input}
+        inputContainerStyle={styles.inputContainer}
+        onChangeText={handleChange(ROOM)}
+        onBlur={handleBlur(ROOM)}
+      />
+      <ErrorMessage errors={errors} touched={touched} field={ROOM} />
     </View>
   );
 };
@@ -59,7 +106,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   inputContainer: {
-    // backgroundColor: "white",
     padding: 0,
     backgroundColor: "white",
     borderColor: "white",
@@ -77,5 +123,6 @@ const pickerStyle = StyleSheet.create({
 
   inputIOSContainer: {
     paddingHorizontal: 10,
+    marginBottom: 20
   },
 });

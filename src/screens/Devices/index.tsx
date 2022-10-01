@@ -1,8 +1,12 @@
+import { useNavigation } from "@react-navigation/native";
 import { useContext, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import deviceApi from "src/api/device";
 
 import AppButton from "src/components/AppButton";
 import AppCard from "src/components/Card";
+import { SCREEN_NAME } from "src/constant";
+import { AuthContext } from "src/context/AuthContext";
 import { DeviceContext } from "src/context/DeviceContect";
 import useUpdateDeviceStatus from "../Home/hooks";
 
@@ -13,17 +17,34 @@ const DeviceByRoom = ({
   roomNumber: number;
   data: any;
 }) => {
-  const { getAllDevices, handleTurnOnAllDevices } = useContext(DeviceContext) as any;
+  const { isAdmin } = useContext(AuthContext) as any;
+  const { getAllDevices, handleTurnOnAllDevices } = useContext(
+    DeviceContext
+  ) as any;
   const { onUpdateDevice } = useUpdateDeviceStatus();
   const [turnOn, setTurnOn] = useState(false);
 
-  const cardItems = data?.map((d: any) => ({
-    title: d?.name,
-    value: d?.interact ? (d?.value ? "ON" : "OFF") : d?.value,
-    buttonColor: d?.value === 1 ? "primary" : "warning",
-    hasButton: d?.interact,
-    deviceId: d._id,
-  }));
+  const handleDeleteDevice = (deviceId: string) => async () => {
+    await deviceApi.deleteDevice(deviceId);
+    await getAllDevices();
+  };
+
+  const cardItems = isAdmin
+    ? data?.map((d: any) => ({
+        title: d?.name,
+        hasButton: true,
+        deviceId: d._id,
+        value: "Delete",
+        onPress: handleDeleteDevice(d._id),
+        info: d.personId?.email,
+      }))
+    : data?.map((d: any) => ({
+        title: d?.name,
+        value: d?.interact ? (d?.value ? "ON" : "OFF") : d?.value,
+        buttonColor: d?.value === 1 ? "primary" : "warning",
+        hasButton: d?.interact,
+        deviceId: d._id,
+      }));
 
   const handleChangeStatus = (deviceId: any) => async () => {
     await onUpdateDevice(deviceId);
@@ -44,13 +65,15 @@ const DeviceByRoom = ({
     <View style={{ ...styles.deviceByRoom, ...styles.shadow }}>
       <View style={styles.roomTitle}>
         <Text style={styles.deviceByRoomText}>Room {roomNumber}</Text>
-        <AppButton
-          title={turnOn ? "Turn off all lights" : "Turn on all lights"}
-          onPress={handleTurnOnAllDevicesByRoom(roomNumber)}
-          buttonStyle={styles.turnOnAllBtn}
-          titleStyle={styles.turnOnAllBtnTitle}
-          type="outline"
-        />
+        {isAdmin ? null : (
+          <AppButton
+            title={turnOn ? "Turn off all lights" : "Turn on all lights"}
+            onPress={handleTurnOnAllDevicesByRoom(roomNumber)}
+            buttonStyle={styles.turnOnAllBtn}
+            titleStyle={styles.turnOnAllBtnTitle}
+            type="outline"
+          />
+        )}
       </View>
       {cardItems?.map((item: any) => (
         <View key={item.deviceId}>
@@ -60,7 +83,8 @@ const DeviceByRoom = ({
             value={item.value}
             hasButton={item.hasButton}
             buttonColor={item.buttonColor}
-            onPress={handleChangeStatus(item.deviceId)}
+            onPress={item.onPress || handleChangeStatus(item.deviceId)}
+            info={item.info}
           />
         </View>
       ))}
@@ -95,6 +119,7 @@ const HomeByFloor = ({
 
 const Devices = () => {
   const { floorMap } = useContext(DeviceContext) as any;
+  const navigate = useNavigation();
 
   const renderFloor = useMemo(() => {
     const renderList: any[] = [];
@@ -104,12 +129,28 @@ const Devices = () => {
     return renderList;
   }, [floorMap]);
 
-  return <ScrollView>{renderFloor}</ScrollView>;
+  const handleGoToAddNewDevice = () => {
+    navigate.navigate(SCREEN_NAME.ADD_NEW_DEVICE as any);
+  };
+
+  return (
+    <ScrollView style={styles.wrap}>
+      {renderFloor}
+      <AppButton
+        title="Add New Device"
+        onPress={handleGoToAddNewDevice}
+        buttonStyle={styles.buttonAddNew}
+      />
+    </ScrollView>
+  );
 };
 
 export default Devices;
 
 const styles = StyleSheet.create({
+  wrap: {
+    marginBottom: 20,
+  },
   shadow: {
     shadowOffset: { width: 2, height: 4 },
     shadowColor: "#171717",
@@ -149,5 +190,8 @@ const styles = StyleSheet.create({
   },
   turnOnAllBtnTitle: {
     fontSize: 12,
+  },
+  buttonAddNew: {
+    marginHorizontal: 10,
   },
 });

@@ -13,6 +13,14 @@ const deviceApi = {
     } catch (error) {}
   },
 
+  getAllDevicesAdmin: async () => {
+    try {
+      const result = await axios.get(API_ROUTES.DEVICE_ADMIN);
+
+      return result;
+    } catch (error) {}
+  },
+
   getAllDeviceType: async () => {
     try {
       const result = await axios.get(API_ROUTES.DEVICE_TYPE);
@@ -47,6 +55,14 @@ const deviceApi = {
     } catch (error) {
       console.log(error);
     }
+  },
+
+  deleteDevice: async (deviceId: any) => {
+    try {
+      const result = await axios.delete(API_ROUTES.DEVICE_WITH_ID(deviceId));
+
+      return result;
+    } catch (error) {}
   },
 };
 

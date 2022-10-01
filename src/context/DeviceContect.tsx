@@ -14,7 +14,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
   const [devices, setDevices] = useState<any[]>([]);
   const [floorMap, setFloorMap] = useState();
   const [selectDataDevice, setSelectDataDevice] = useState([]);
-  const { info } = useContext(AuthContext) as any;
+  const { info, isAdmin } = useContext(AuthContext) as any;
   const [loading, setLoading] = useState(false);
 
   const getAllDevices = async () => {
@@ -23,8 +23,12 @@ const DeviceProvider = ({ children }: { children: any }) => {
     }
     try {
       setLoading(true);
-      const result = await deviceService.getAllDevices({ personId: info.id });
-      
+
+      const fnGetDevice = isAdmin
+        ? deviceService.getAllDevicesAdmin
+        : deviceService.getAllDevices;
+      const result = await fnGetDevice({ personId: info.id });
+
       const data = result?.data;
 
       const selectData = data?.map((device: any) => ({
@@ -120,7 +124,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     getAllDevices();
-  }, [info]);
+  }, [info, isAdmin]);
 
   const addNewDevice = async (data: any) => {
     if (!info?.id) {
@@ -128,8 +132,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
     }
 
     try {
-      const sendData = { ...data, personId: info.id };
-      await deviceService.createNewDevice(sendData);
+      await deviceService.createNewDevice(data);
       await getAllDevices();
     } catch (error) {
       console.log(error);
@@ -156,7 +159,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
         getAllDevices,
         setDevices,
         floorMap,
-        handleTurnOnAllDevices
+        handleTurnOnAllDevices,
       }}
     >
       {children}

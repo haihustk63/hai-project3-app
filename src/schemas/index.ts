@@ -1,8 +1,12 @@
-import { string, object } from "yup";
+import { string, object, ref, number } from "yup";
 
 export const ADD_NEW_DEVICE_FIELD = {
   NAME: "name",
   TYPE: "type",
+  PORT: "port",
+  PERSON: "personId",
+  FLOOR: "floor",
+  ROOM: "room",
 };
 
 export const ADD_NEW_RULES_FIELD = {
@@ -27,10 +31,17 @@ export const LOGIN_FIELD = {
   PASSWORD: "password",
 };
 
-export const addNewDeviceSchema = object({
-  [ADD_NEW_DEVICE_FIELD.NAME]: string().required("Device name is required"),
-  [ADD_NEW_DEVICE_FIELD.TYPE]: string().required("Please select device type"),
-});
+export const addNewDeviceSchema = (ports: any[]) =>
+  object({
+    [ADD_NEW_DEVICE_FIELD.NAME]: string().required("Device name is required"),
+    [ADD_NEW_DEVICE_FIELD.TYPE]: string().required("Please select device type"),
+    [ADD_NEW_DEVICE_FIELD.PORT]: number()
+      .required("Port is required")
+      .notOneOf(ports),
+    [ADD_NEW_DEVICE_FIELD.PERSON]: string().required("Please choose an user"),
+    [ADD_NEW_DEVICE_FIELD.FLOOR]: number().required("Floor is required"),
+    [ADD_NEW_DEVICE_FIELD.ROOM]: number().required("Room is required"),
+  });
 
 export const addAutomationRuleTime = object({
   [ADD_NEW_RULES_FIELD.NAME]: string().required("Name is required"),
@@ -65,7 +76,10 @@ export const registerSchema = object({
   [REGISTER_FIELD.PASSWORD]: string()
     .required("Password is required")
     .min(8, "Please enter at least 8 character"),
-  [REGISTER_FIELD.RE_PASSWORD]: string().required(
-    "Confirm password is required"
-  ),
+  [REGISTER_FIELD.RE_PASSWORD]: string()
+    .required("Confirm password is required")
+    .oneOf(
+      [ref(REGISTER_FIELD.PASSWORD), null],
+      "Confirm password do not match password"
+    ),
 });

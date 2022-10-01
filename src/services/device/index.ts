@@ -5,6 +5,10 @@ class DeviceService {
     return await deviceApi.getAllDevices({ personId });
   };
 
+  getAllDevicesAdmin = async () => {
+    return await deviceApi.getAllDevicesAdmin();
+  };
+
   getAllDeviceTypes = async () => {
     return await deviceApi.getAllDeviceType();
   };
@@ -19,6 +23,10 @@ class DeviceService {
 
   turnOnAllDevicesByRoom = async (room: number, value: number) => {
     return await deviceApi.turnOnAllDeviceByRoom(room, value);
+  };
+
+  deleteDevice = async (deviceId: string) => {
+    return await deviceApi.deleteDevice(deviceId);
   };
 }
 

@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import AuthProvider, { AuthContext } from "src/context/AuthContext";
 import DeviceProvider from "src/context/DeviceContect";
 import RuleProvider from "src/context/RuleContext";
-import { ROUTES_AUTH, ROUTES_NOT_AUTH } from "./src/constant/routes";
+import { ROUTES_AUTH, ROUTES_AUTH_ADMIN, ROUTES_NOT_AUTH } from "./src/constant/routes";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -29,7 +29,7 @@ const makeStackNavigation = (screens: any) => () => {
 };
 
 const Navigation = () => {
-  const { auth, loading } = useContext(AuthContext) as any;
+  const { auth, loading, isAdmin } = useContext(AuthContext) as any;
 
   if (loading) return null;
 
@@ -47,9 +47,48 @@ const Navigation = () => {
         </Stack.Navigator>
       )}
 
-      {auth && (
+      {auth && !isAdmin && (
         <BottomTab.Navigator initialRouteName={ROUTES_AUTH[0].name}>
           {ROUTES_AUTH.map((route) => {
+            if (route.type === "stack") {
+              return (
+                <BottomTab.Screen
+                  key={route.name}
+                  name={route.name}
+                  component={makeStackNavigation(route.screens) as any}
+                  options={{
+                    tabBarLabel: route?.name,
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon
+                        name={route?.screens?.[0].icon || ""}
+                        color={color}
+                        size={size}
+                      />
+                    ),
+                  }}
+                />
+              );
+            } else {
+              return (
+                <BottomTab.Screen
+                  key={route.name}
+                  name={route.name}
+                  component={route.component as any}
+                  options={{
+                    tabBarLabel: route.name,
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon name={route.icon as any} color={color} size={size} />
+                    ),
+                  }}
+                />
+              );
+            }
+          })}
+        </BottomTab.Navigator>
+      )}
+      {auth && !!isAdmin && (
+        <BottomTab.Navigator initialRouteName={ROUTES_AUTH_ADMIN[0].name}>
+          {ROUTES_AUTH_ADMIN.map((route) => {
             if (route.type === "stack") {
               return (
                 <BottomTab.Screen

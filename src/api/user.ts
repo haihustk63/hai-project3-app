@@ -19,4 +19,11 @@ export const userApi = {
       return error;
     }
   },
+  getAllUsers: async () => {
+    try {
+      return await axios.get(API_ROUTES.USER);
+    } catch (error) {
+      return error;
+    }
+  },
 };

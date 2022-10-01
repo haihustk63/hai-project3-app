@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "@rneui/themed";
 import { Formik } from "formik";
@@ -12,20 +12,28 @@ import {
 } from "react-native";
 
 import AppButton from "src/components/AppButton";
-import { SCREEN_NAME } from "src/constant";
 import { DeviceContext } from "src/context/DeviceContect";
 import { addNewDeviceSchema, ADD_NEW_DEVICE_FIELD } from "../../schemas";
 import GroupField from "./GroupField";
 
-const { NAME, TYPE } = ADD_NEW_DEVICE_FIELD;
+const { NAME, TYPE, PORT, PERSON, FLOOR, ROOM } = ADD_NEW_DEVICE_FIELD;
 
 const initialValues = {
   [NAME]: "",
   [TYPE]: "",
+  [PORT]: "",
+  [PERSON]: "",
+  [FLOOR]: "",
+  [ROOM]: "",
 };
 
 const AddNewDevice = () => {
-  const { addNewDevice, deviceTypes = [] } = useContext(DeviceContext) as any;
+  const {
+    addNewDevice,
+    deviceTypes = [],
+    devices,
+    getAllDevices,
+  } = useContext(DeviceContext) as any;
   const navigate = useNavigation();
   const ref = useRef(null) as any;
 
@@ -39,10 +47,16 @@ const AddNewDevice = () => {
         await addNewDevice(data);
         ref?.current.setValues({ ...initialValues });
         ref?.current.setTouched({ [NAME]: false, [TYPE]: false });
-        navigate.navigate(SCREEN_NAME.HOME as any);
+        await getAllDevices();
+        // navigate.navigate(SCREEN_NAME.HOME as any);
       }
     }
   };
+
+  const schema = useMemo(() => {
+    const ports = devices?.map((d: any) => d.port);
+    return addNewDeviceSchema(ports);
+  }, [devices]);
 
   return (
     <ScrollView>
@@ -54,13 +68,10 @@ const AddNewDevice = () => {
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmitForm}
-          validationSchema={addNewDeviceSchema}
+          validationSchema={schema}
           innerRef={ref}
         >
-          {({
-            values,
-            handleSubmit,
-          }) => (
+          {({ values, handleSubmit }) => (
             <View style={styles.container}>
               <Image
                 source={{
