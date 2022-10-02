@@ -1,11 +1,18 @@
+// import thư viện expo-secure-store
 import * as ESStore from "expo-secure-store";
 
+// Định dạng thông tin cần lưu
 export type UserInfo = {
   id: string;
   email: string;
   token: string;
+  role: number;
 };
 
+// Đối tượng SecureGateway chứa các phương thức
+// save: Lưu thông tin
+// load: Lấy thông tin đã lưu
+// delete: Xóa thông tin đã lưu
 const SecureGateway = {
   save: async (info: UserInfo) => {
     try {

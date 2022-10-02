@@ -1,10 +1,22 @@
+// Import từ thư viện cần thiết 
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 
+// Import AppButton
 import AppButton from "../AppButton";
 
-const AppCard = ({
+/* DeviceCard nhận vào các props 
+title: Tên thiết bị
+value: Giá trị của thiết bị đó (như là ON/OFF)
+hasButton: Có nút bấm không
+buttonColor: Màu của nút bấm
+typeButton: Kiểu button (outline, clear, solid)
+onPress: Hàm thực hiện khi bấm nút
+style: Style custom
+info: Thông tin của người sở hữu thiết bị (Ở đây là email)
+*/
+const DeviceCard = ({
   title,
   value,
   buttonColor,
@@ -25,6 +37,7 @@ const AppCard = ({
 }) => {
   return (
     <View style={{ ...styles.container, ...style }}>
+      {/* Sử dụng LinearGradient để tạo background màu gradient cho card */}
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -36,7 +49,7 @@ const AppCard = ({
             <Icon name="lightbulb-o" size={28} color="#fff" />
             <Text style={styles.leftText}>{title}</Text>
           </View>
-          {/* <Divider style={styles.divider} /> */}
+          {/* Nếu hasButton là true thì mới hiển thị button và truyền vào các props */}
           {hasButton ? (
             <AppButton
               title={String(value)}
@@ -50,14 +63,17 @@ const AppCard = ({
             <Text style={styles.rightText}>{value}</Text>
           )}
         </View>
+        {/* Nếu có info thì hiển thị bằng thẻ Text */}
         {!!info && <Text style={styles.linearContainer.infoText}>{info}</Text>}
       </LinearGradient>
     </View>
   );
 };
 
-export default AppCard;
+// Export DeviceCard để sử dụng ở nơi khác
+export default DeviceCard;
 
+// Style custom cho component
 const styles = StyleSheet.create({
   container: {
     flexBasis: "100%",
@@ -91,7 +107,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   leftText: {
-    // fontWeight: "500",
     fontSize: 16,
     textAlign: "center",
     marginLeft: 10,

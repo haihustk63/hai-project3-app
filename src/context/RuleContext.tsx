@@ -1,10 +1,27 @@
+// import từ thư viện react các hooks và hàm createContext
 import { createContext, useContext, useEffect, useState } from "react";
+
+// import ruleService và AuthContext
 import ruleService from "src/services/rule";
 import { AuthContext } from "./AuthContext";
 
+// Tạo RuleContext bằng hàm createContext
 export const RuleContext = createContext({}) as any;
 
 const RuleProvider = ({ children }: { children: any }) => {
+  /*
+  Các state được quản lý:
+  ---FORM
+  onTimeSwitch: Switch chọn thời gian bật thiết bị
+  offTimeSwitch: Switch chọn thời gian tắt thiết bị
+  modeCondition: Chọn mode luật theo thời gian hay luật phụ thuộc
+  error: Lỗi trong quá trình tạo luật theo thời gian
+  errorRuleCondition: Lỗi trong quá trình tạo luật phụ thuộc
+  ---OTHERS
+  rules: Danh sách các luật theo thời gian
+  rulesCondition: Danh sách các luật phụ thuộc
+  refresh: Khi refresh là true sẽ lấy lại danh sách các luật
+  */
   const [onTimeSwitch, setOnTimeSwitch] = useState(false);
   const [offTimeSwitch, setOffTimeSwitch] = useState(false);
   const [modeCondition, setModeCondition] = useState(false);
@@ -14,8 +31,10 @@ const RuleProvider = ({ children }: { children: any }) => {
   const [rulesCondition, setRulesCondition] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
+  // Lấy ra info từ AuthContext
   const { info = {} } = useContext(AuthContext) as any;
 
+  // Khi app render lần đầu tiên sẽ lấy danh sách các luật
   useEffect(() => {
     const getAllRules = async () => {
       if (info?.id) {
@@ -27,6 +46,7 @@ const RuleProvider = ({ children }: { children: any }) => {
     getAllRules();
   }, []);
 
+  // Khi refresh là true hoặc info thay đổi sẽ lấy lại danh sách thiết bị
   useEffect(() => {
     const getAllRules = async () => {
       if (info?.id) {
@@ -41,27 +61,32 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   }, [refresh, info]);
 
+  // Hàm thay đổi switch chọn thời gian bật
   const handleToggleOnTime = () => {
     setOnTimeSwitch(!onTimeSwitch);
     setError(false);
   };
 
+  // Hàm thay đổi switch chọn thời gian tắt
   const handleToggleOffTime = () => {
     setOffTimeSwitch(!offTimeSwitch);
     setError(false);
   };
 
+  // Hàm này sẽ đưa cả switch chọn thời gian bật và tắt về mode OFF
   const handleResetSwitchTime = () => {
     setOnTimeSwitch(false);
     setOffTimeSwitch(false);
   };
 
+  // Thay đổi chế độ thêm luật thời gian hay luật phụ thuộc
   const handleToggleMode = () => {
     setModeCondition(!modeCondition);
     setError(false);
     setErrorRuleCondition(false);
   };
 
+  // Hàm thêm một luật thời gian. Sau khi thêm sau đặt lại các state về mặc định
   const handleAddRule = async (data: any) => {
     try {
       const result = await ruleService.addRule(data);
@@ -76,6 +101,7 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
+  // Hàm thêm một luật tự động. Sau khi thêm sau đặt lại các state về mặc định
   const handleAddRuleCondition = async (data: any) => {
     try {
       const result = await ruleService.addRuleCondition(data);
@@ -90,6 +116,7 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
+  // Hàm lấy tất cả các luật thời gian
   const handleGetRules = async (personId: string) => {
     try {
       const result = await ruleService.getRules(personId);
@@ -100,6 +127,7 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
+  // Hàm lấy tất cả các luật phụ thuộc
   const handleGetRulesCondition = async (personId: string) => {
     try {
       const result = await ruleService.getRulesCondition(personId);
@@ -110,6 +138,7 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
+  // Hàm xóa một luật thời gian
   const handleDeleteRule = async (ruleId: string) => {
     try {
       await ruleService.deleteRule(ruleId);
@@ -119,6 +148,7 @@ const RuleProvider = ({ children }: { children: any }) => {
     }
   };
 
+  // Hàm xóa một luật phụ thuộc
   const handleDeleteRuleCondition = async (ruleId: string) => {
     try {
       await ruleService.deleteRuleCondition(ruleId);

@@ -1,26 +1,8 @@
+// import URL gọi đến server từ file env và export để dùng trong ứng dụng
 import { API_URL } from "@env";
-
 export const API_URL_EXPORT = API_URL;
 
-export const BUTTON_TITLE = {
-  ADD_AUTOMATION_RULE: "Add Automation Rules",
-};
-
-export const ICON_SIZE = {
-  VERY_SMALL: 10,
-  SMALL: 14,
-  MEDIUM: 18,
-  LARGE: 22,
-};
-
-export const BUTTON_COLOR = {
-  PRIMARY: "primary",
-  SECONDARY: "secondary",
-  WARNING: "warning",
-  SUCCESS: "success",
-  ERROR: "error",
-};
-
+// Định nghĩa các routes để gọi server
 export const API_NAMES = {
   USER: "users",
   DEVICE: "devices",
@@ -42,6 +24,7 @@ export const API_ROUTES = {
   RULE_CONDITION: `${API_URL}/${API_NAMES.RULE_CONDITION}`,
 };
 
+// Định nghĩa tên các màn hình
 export const SCREEN_NAME = {
   HOME: "Home",
   WELCOME: "Welcome",
@@ -56,11 +39,13 @@ export const SCREEN_NAME = {
   DEVICES: "Devices"
 };
 
-export const MIN_MAX_MOISTURE = {
+// Giá trị min, max cho thanh slider
+export const MIN_MAX_SLIDER = {
   MIN: 0,
   MAX: 100,
 };
 
+// Giá trị của thiết bị: ON/OFF
 export const DEVICE_VALUE_OPTIONS = [
   {
     label: "OFF",

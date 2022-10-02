@@ -1,14 +1,20 @@
+// Import từ các thư viện
 import { Divider } from "@rneui/themed";
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
+// Import AppButton
 import AppButton from "../AppButton";
 
+/* Các props cần truyền cho RuleCard
+rule: Thông tin của rule
+onPressButton: Mỗi rule sẽ có nút xóa, hàm này thực hiện khi bấm nút
+condition: Rule đó có là condition rule (luật phụ thuộc) hay không
+*/
 const RuleCard = ({
   rule,
   onPressButton,
   condition = false,
-  ...props
 }: {
   rule: any;
   onPressButton: any;
@@ -19,7 +25,6 @@ const RuleCard = ({
     <View style={styles.container}>
       <View style={styles.name}>
         <Text style={styles.nameText}>{rule.name}</Text>
-
         <AppButton
           title="Delete"
           onPress={onPressButton}
@@ -29,6 +34,7 @@ const RuleCard = ({
       </View>
       <Divider style={styles.divider} />
       {condition ? (
+        // Nếu rule là condition rule sẽ hiển thị thiết bị điều kiện và thiết bị phụ thuộc //
         <Text style={styles.info}>
           {rule?.preDeviceId?.name} {rule?.preValue === 1 ? "ON" : "OFF"}
           <View style={styles.iconWrap}>
@@ -37,6 +43,7 @@ const RuleCard = ({
           {rule?.afterDeviceId?.name} {rule?.afterValue === 1 ? "ON" : "OFF"}
         </Text>
       ) : (
+        // Nếu rule là time rule thì hiển thị thời gian rule sẽ kích hoạt
         <Text style={styles.info}>
           Turn {rule.value === 0 ? "off" : "on"} {rule.deviceId.name} on {hour}:
           {Number(minute < 10) ? `0${minute}` : minute}
@@ -46,8 +53,10 @@ const RuleCard = ({
   );
 };
 
+// Export RuleCard để nơi khác có thể sử dụng
 export default RuleCard;
 
+// StyleSheet Object: Custom thêm cho RuleCard
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",

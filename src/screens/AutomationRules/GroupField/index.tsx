@@ -1,3 +1,4 @@
+// import từ các thư viện và module ngoài
 import { useContext } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Input, Switch } from "@rneui/themed";
@@ -7,7 +8,7 @@ import RNPickerSelect from "react-native-picker-select";
 
 import ErrorMessage from "src/components/ErrorMessage";
 import { DEVICE_VALUE_OPTIONS } from "src/constant";
-import { DeviceContext } from "src/context/DeviceContect";
+import { DeviceContext } from "src/context/DeviceContext";
 import { RuleContext } from "src/context/RuleContext";
 import { ADD_NEW_RULES_FIELD } from "../../../schemas";
 
@@ -23,6 +24,7 @@ const {
 } = ADD_NEW_RULES_FIELD;
 
 const GroupField = () => {
+  // Sử dụng các giá trị và hàm quản lý form của formik qua hook useFormikContext
   const {
     values,
     handleChange,
@@ -33,8 +35,10 @@ const GroupField = () => {
     resetForm,
   } = useFormikContext();
 
+  // Danh sách thiết bị để làm option cho select input
   const { selectDataDevice = [] } = useContext(DeviceContext) as any;
 
+  // Sử dụng các giá trị của RuleContext
   const {
     onTimeSwitch,
     offTimeSwitch,
@@ -45,11 +49,13 @@ const GroupField = () => {
     handleResetSwitchTime,
   } = useContext(RuleContext) as any;
 
+  // Hàm xử lý khi thay đổi thời gian bật/tắt thiết bị
   const handleDateChange = (field: string) => (e: any, selectedDate: any) => {
     const currentDate = selectedDate;
     setFieldValue(field, currentDate);
   };
 
+  // Hàm này thực hiện mỗi khi switch qua lại onTime/offTime
   const handleToggleTime = (cb: any) => () => {
     setFieldValue(ON_TIME, new Date());
     setFieldValue(OFF_TIME, new Date());
@@ -57,12 +63,14 @@ const GroupField = () => {
     cb();
   };
 
+  // Hàm xử lý khi switch qua lại mode luật thời gian hay mode luật phụ thuộc
   const handleToggleModeCondition = () => {
     resetForm();
     handleToggleMode();
     handleResetSwitchTime();
   };
 
+  // Hàm này có nhiệm vụ render giao diện khi chọn mode luật thời gian
   const renderModeTime = () => {
     return (
       <View style={styles.renderMode}>
@@ -116,6 +124,7 @@ const GroupField = () => {
     );
   };
 
+  // Hàm này có nhiệm vụ render giao diện khi chọn mode luật phụ thuộc
   const renderModeCondition = () => {
     return (
       <>
@@ -180,6 +189,7 @@ const GroupField = () => {
             />
           </View>
         </View>
+        {/* Vì luật thời gian hay luật phụ thuộc đều cần name, nên không tách riêng ra nữa */}
         <Input
           value={(values as any)[NAME]}
           placeholder="Enter rule name"
@@ -197,6 +207,7 @@ const GroupField = () => {
 
 export default GroupField;
 
+// Custom style cho GroupField
 const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
@@ -209,7 +220,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   inputContainer: {
-    // backgroundColor: "white",
     padding: 0,
     backgroundColor: "#eee",
     borderColor: "white",
@@ -253,6 +263,7 @@ const styles = StyleSheet.create({
   },
 });
 
+// Custom style cho select input
 const pickerStyle = StyleSheet.create({
   inputIOS: {
     padding: 14,

@@ -1,5 +1,12 @@
+// Import StyleSheet, Text của react-native
 import { StyleSheet, Text } from "react-native";
 
+/* Props truyền cho ErrorMessage
+touched: touched state mà formik quản lý
+errors: errors state mà formik form quản lý
+field: field đang xét
+style: custom style cho ErrorMessage
+*/
 const ErrorMessage = ({
   touched,
   errors,
@@ -16,6 +23,7 @@ const ErrorMessage = ({
   ) : null;
 };
 
+// StyleSheet Object: Custom style cho ErrorMessage
 const styles = StyleSheet.create({
   error: {
     fontSize: 14,

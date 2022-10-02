@@ -6,21 +6,25 @@ import RNPickerSelect from "react-native-picker-select";
 
 import { ADD_NEW_DEVICE_FIELD } from "../../../schemas";
 import ErrorMessage from "src/components/ErrorMessage";
-import { DeviceContext } from "src/context/DeviceContect";
+import { DeviceContext } from "src/context/DeviceContext";
 import useGetUsers from "../hooks/useGetUsers";
 
 const { NAME, TYPE, PERSON, PORT, FLOOR, ROOM } = ADD_NEW_DEVICE_FIELD;
 
 const GroupField = () => {
+  // useFormikContext cung cấp các state và hàm quản lý form
   const { values, handleChange, handleBlur, errors, touched } =
     useFormikContext();
 
+  // Lấy ra danh sách users bằng custom hook useGetUsers
   const { users = [] } = useGetUsers();
 
+  // Lấy ra danh sách loại thiết bị từ DeviceContext
   const { deviceTypes = [], loading } = useContext(DeviceContext) as any;
 
   if (loading) return null;
 
+  // Form sẽ gồm các trường name, type, person, port, floor, room
   return (
     <View style={styles.container}>
       <Input
@@ -96,6 +100,7 @@ const GroupField = () => {
 
 export default GroupField;
 
+// Custom style cho GroupField
 const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
@@ -123,6 +128,6 @@ const pickerStyle = StyleSheet.create({
 
   inputIOSContainer: {
     paddingHorizontal: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
 });

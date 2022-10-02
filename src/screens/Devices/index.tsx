@@ -1,15 +1,18 @@
+// import các thư viện và module ngoài
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import deviceApi from "src/api/device";
 
 import AppButton from "src/components/AppButton";
-import AppCard from "src/components/Card";
+import AppCard from "src/components/DeviceCard";
 import { SCREEN_NAME } from "src/constant";
 import { AuthContext } from "src/context/AuthContext";
-import { DeviceContext } from "src/context/DeviceContect";
+import { DeviceContext } from "src/context/DeviceContext";
 import useUpdateDeviceStatus from "../Home/hooks";
 
+// Component hiển thị các thiết bị trong cùng một phòng
+// Nhận vào data là danh sách các phòng và roomNumber là số phòng
 const DeviceByRoom = ({
   data,
   roomNumber,
@@ -17,18 +20,24 @@ const DeviceByRoom = ({
   roomNumber: number;
   data: any;
 }) => {
+  // Sử dụng các giá trị trong AuthContext và DeviceContext
   const { isAdmin } = useContext(AuthContext) as any;
   const { getAllDevices, handleTurnOnAllDevices } = useContext(
     DeviceContext
   ) as any;
+
   const { onUpdateDevice } = useUpdateDeviceStatus();
+
+  // State turnOn để báo hiệu bật/tắt các thiết bị ánh sáng trong phòng
   const [turnOn, setTurnOn] = useState(false);
 
+  // Hàm này sẽ giúp xóa một thiết bị trong phòng, sau đó lấy lại danh sách mới
   const handleDeleteDevice = (deviceId: string) => async () => {
     await deviceApi.deleteDevice(deviceId);
     await getAllDevices();
   };
 
+  // cardItems chứa các thông tin cần thiết để truyền cho AppCard
   const cardItems = isAdmin
     ? data?.map((d: any) => ({
         title: d?.name,
@@ -46,11 +55,13 @@ const DeviceByRoom = ({
         deviceId: d._id,
       }));
 
+  // Hàm này yêu cầu thay đổi trạng thái của thiết bị dựa vào id
   const handleChangeStatus = (deviceId: any) => async () => {
     await onUpdateDevice(deviceId);
     await getAllDevices();
   };
 
+  // Hàm này yêu cầu bật/tắt tất cả các thiết bị ánh sáng trong phòng
   const handleTurnOnAllDevicesByRoom = (room: number) => async () => {
     if (turnOn) {
       await handleTurnOnAllDevices(room, 0);
@@ -75,6 +86,7 @@ const DeviceByRoom = ({
           />
         )}
       </View>
+      {/* cardItems được map để tạo thành các AppCard */}
       {cardItems?.map((item: any) => (
         <View key={item.deviceId}>
           <AppCard
@@ -92,6 +104,8 @@ const DeviceByRoom = ({
   );
 };
 
+// Component hiển thị các phòng theo tầng
+// Nhận vào data: Danh sách các phòng trong tầng và floorNumber: Sô tầng
 const HomeByFloor = ({
   data,
   floorNumber,
@@ -99,6 +113,7 @@ const HomeByFloor = ({
   data: any;
   floorNumber: number;
 }) => {
+  // Ứng với mỗi phòng sẽ render các thiết bị trong phòng đó
   const renderRoom = useMemo(() => {
     const renderList: any[] = [];
     data?.forEach((value: any, key: number) => {
@@ -117,10 +132,13 @@ const HomeByFloor = ({
   );
 };
 
+// Màn Devices
 const Devices = () => {
+  // Sử dụng floorMap từ DeviceContext, chứa thông tin các tầng, các phòng và các thiết bị trong từng phòng
   const { floorMap } = useContext(DeviceContext) as any;
   const navigate = useNavigation();
 
+  // Với mỗi tầng sẽ hiển thị ra các phòng trong tầng đó
   const renderFloor = useMemo(() => {
     const renderList: any[] = [];
     floorMap?.forEach((value: any, key: number) => {
@@ -129,6 +147,7 @@ const Devices = () => {
     return renderList;
   }, [floorMap]);
 
+  // Nếu người dùng bấm nút thêm thiết bị sẽ chuyển sang màn thêm thiết bị
   const handleGoToAddNewDevice = () => {
     navigate.navigate(SCREEN_NAME.ADD_NEW_DEVICE as any);
   };
@@ -147,6 +166,7 @@ const Devices = () => {
 
 export default Devices;
 
+// Custom style cho màn Devices
 const styles = StyleSheet.create({
   wrap: {
     marginBottom: 20,

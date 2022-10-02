@@ -1,3 +1,4 @@
+// import từ các thư viện và module ngoài
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "@rneui/themed";
 import { Formik } from "formik";
@@ -11,11 +12,11 @@ import {
   Text,
   View,
 } from "react-native";
+
 import AppButton from "src/components/AppButton";
 import { SCREEN_NAME } from "src/constant";
 import { AuthContext } from "src/context/AuthContext";
 import { RuleContext } from "src/context/RuleContext";
-
 import {
   addAutomationRuleCondition,
   addAutomationRuleTime,
@@ -34,6 +35,19 @@ const {
   AFTER_VALUE,
 } = ADD_NEW_RULES_FIELD;
 
+/* 
+Giá trị khởi tạo truyền cho form gồm:
+name: Tên luật
+---Luật thời gian
+device: Thiết bị thực hiện
+onTime: Thời gian bật
+offTime: Thời gian tắt
+---Luật phụ thuộc
+preDevice: Id của thiết bị điều kiện
+preValue: Giá trị thiết bị điều kiện
+afterDevice: Id của thiết bị phụ thuộc
+afterValue: Giá trị của thiết bị phụ thuộc
+*/
 const initialValues = {
   [NAME]: "",
   [DEVICE]: "",
@@ -46,6 +60,7 @@ const initialValues = {
 };
 
 const AutomationRules = () => {
+  // Sử dụng các giá trị mà RuleContext cung cấp
   const {
     onTimeSwitch,
     offTimeSwitch,
@@ -59,17 +74,28 @@ const AutomationRules = () => {
     handleAddRuleCondition,
   } = useContext(RuleContext) as any;
 
+  // Sử dụng state info của AuthContext
   const { info = {} } = useContext(AuthContext) as any;
 
   const navigate = useNavigation();
 
   const ref = useRef(null) as any;
 
+  // Hàm thực hiện khi submit form
   const handleSubmitForm = async (values: any) => {
     if (info?.id) {
       return;
     }
 
+    /*
+    Đối với luật phụ thuộc, ta cần check thiết bị điều kiện và thiết bị phụ thuộc
+    có trùng nhau không (mong muốn là không) và luật đó đã tồn tại hay chưa.
+
+    Đối với luật theo thời gian, ta check nếu cả thời gian bật và tắt đều được chọn, 
+    thì hai thời gian này không được trùng nhau.
+
+    Nếu thỏa mãn, thêm luật đó.
+    */
     if (modeCondition) {
       let { preDevice, preValue, afterDevice, afterValue, name } = values;
       preValue = preValue === "on" ? 1 : 0;
@@ -121,6 +147,7 @@ const AutomationRules = () => {
         return;
       }
 
+      // Chuyển về định dạng này để sử dụng node-cron ở server
       const cronOnTime = `00 ${onTimeMinute} ${onTimeHour} * * *`;
       const cronOffTime = `00 ${offTimeMinute} ${offTimeHour} * * *`;
 
@@ -148,6 +175,7 @@ const AutomationRules = () => {
       await handleAddRule(rule);
     }
 
+    // Sau khi thêm luật xong trở về màn danh sách luật
     navigate.navigate(SCREEN_NAME.RULES as any);
   };
   return (
@@ -161,12 +189,13 @@ const AutomationRules = () => {
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmitForm}
+          // Sử dụng lược đồ validate tùy vào luật thời gian hay luật phụ thuộc
           validationSchema={
             modeCondition ? addAutomationRuleCondition : addAutomationRuleTime
           }
           innerRef={ref}
         >
-          {({ values, handleSubmit }) => (
+          {({ handleSubmit }) => (
             <View style={styles.container}>
               <Image
                 source={{
@@ -202,6 +231,7 @@ const AutomationRules = () => {
 
 export default AutomationRules;
 
+// Custom style cho AutomationRules
 const styles = StyleSheet.create({
   pContainer: {
     minHeight: "100%",

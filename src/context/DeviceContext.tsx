@@ -1,41 +1,62 @@
+// Import các thư viện
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
+// import các hằng số, deviceService, AuthContext
 import { API_URL_EXPORT } from "src/constant";
 import deviceService from "src/services/device";
 import { AuthContext } from "./AuthContext";
 
+// Tạo một socket nối tới server
 const socket = io(API_URL_EXPORT);
 
+// Tạo một context bằng hàm createContext()
 export const DeviceContext = createContext({}) as any;
 
 const DeviceProvider = ({ children }: { children: any }) => {
+  /*
+  Các state context xử lý:
+  deviceTypes: Danh sách loại thiết bị
+  devices: Danh sách thiết bị
+  floorMap: Danh sách thiết bị theo tầng
+  selectDataDevice: Danh sách thiết bị nhưng chỉ giữ lại thông tin tên và id
+  loading: Trạng thái loading khi đang lấy dữ liệu
+  */
   const [deviceTypes, setDeviceTypes] = useState([]);
   const [devices, setDevices] = useState<any[]>([]);
   const [floorMap, setFloorMap] = useState();
   const [selectDataDevice, setSelectDataDevice] = useState([]);
-  const { info, isAdmin } = useContext(AuthContext) as any;
   const [loading, setLoading] = useState(false);
 
+  // Lấy ra info và isAdmin từ AuthContext
+  const { info = {}, isAdmin } = useContext(AuthContext) as any;
+
+  // Hàm dưới đây dùng để lấy tất cả các devices
   const getAllDevices = async () => {
+    // Nếu người dùng chưa đăng nhập (chưa có id trong biến info) thì không làm gì cả
     if (!info?.id) {
       return;
     }
     try {
       setLoading(true);
 
+      // Nếu là admin đăng nhập thì dùng hàm getAllDevicesAdmin
+      // Nếu là người dùng bình thường thì dùng hàm getAllDevices và truyền vào id của người dùng
       const fnGetDevice = isAdmin
         ? deviceService.getAllDevicesAdmin
         : deviceService.getAllDevices;
+
       const result = await fnGetDevice({ personId: info.id });
 
       const data = result?.data;
 
+      // Chỉ lấy name và id của các device để lưu vào selectDataDevice
       const selectData = data?.map((device: any) => ({
         label: device.name,
         value: device._id,
       }));
 
+      // Tạo ra một Map object để lưu trữ các thiết bị theo tầng
       let newFloorMap = new Map();
       data?.forEach((device: any) => {
         newFloorMap.set(device.floor, [
@@ -44,6 +65,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
         ]);
       });
 
+      // Với mỗi tầng trong newFloorMap lại dùng một Map object để lưu thiết bị theo phòng
       newFloorMap.forEach((value, key) => {
         let newValue = new Map();
         value?.map((d: any) => {
@@ -52,6 +74,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
         newFloorMap.set(key, newValue);
       });
 
+      // Lưu các state lại
       setDevices(data);
       setSelectDataDevice(selectData);
       setFloorMap(newFloorMap as any);
@@ -62,6 +85,8 @@ const DeviceProvider = ({ children }: { children: any }) => {
     }
   };
 
+  // Mỗi khi thông tin thiết bị thay đổi sẽ thực hiện lại các hành động trong này
+  // Đó là các kết nối socket tới server để nhận các dữ liệu tức thì
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Client connected");
@@ -103,6 +128,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
     };
   }, [devices]);
 
+  // Khi app mới render lần đầu tiên thì sẽ lấy tất cả danh sách các loại thiết bị
   useEffect(() => {
     const getAllDeviceTypes = async () => {
       try {
@@ -122,10 +148,12 @@ const DeviceProvider = ({ children }: { children: any }) => {
     getAllDeviceTypes();
   }, []);
 
+  // Khi thông tin người dùng thay đổi sẽ lấy lại danh sách các thiết bị
   useEffect(() => {
     getAllDevices();
   }, [info, isAdmin]);
 
+  // Hàm này thực hiện thêm mới một thiết bị và lấy lại danh sách thiết bị sau khi thêm
   const addNewDevice = async (data: any) => {
     if (!info?.id) {
       return;
@@ -139,6 +167,7 @@ const DeviceProvider = ({ children }: { children: any }) => {
     }
   };
 
+  // Hàm xử lý việc bật tất cả thiết bị ánh sáng trong cùng một phòng
   const handleTurnOnAllDevices = async (room: number, value: number) => {
     try {
       await deviceService.turnOnAllDevicesByRoom(room, value);

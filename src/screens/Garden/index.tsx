@@ -1,3 +1,4 @@
+// import từ các thư viện và module ngoài
 import { useContext, useEffect, useState } from "react";
 import { Divider } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,23 +12,34 @@ import {
 
 import AppButton from "src/components/AppButton";
 import AppSlider from "src/components/AppSlider";
-import { MIN_MAX_MOISTURE } from "src/constant";
-import { DeviceContext } from "src/context/DeviceContect";
+import { MIN_MAX_SLIDER } from "src/constant";
+import { DeviceContext } from "src/context/DeviceContext";
 import { useUpdateMoistureConfig, useUpdateWaterPump } from "./hooks";
 
-const { MIN, MAX } = MIN_MAX_MOISTURE;
+const { MIN, MAX } = MIN_MAX_SLIDER;
 
 const Garden = () => {
+  /*
+Các state ở đây
+minPercent: Giá trị hiện tại của thanh Min-Slider
+maxPercent: Giá trị hiện tại của thanh Max-Slider
+refreshing: Báo hiệu cần lấy lại data mới (kéo từ trên xuống để reload màn)
+moistureDevice: Thông tin của cảm biến độ ẩm
+waterPumpDevice: Thông tin của máy bơm nước
+  */
   const [minPercent, setMinPercent] = useState(30);
   const [maxPercent, setMaxPercent] = useState(100);
   const [refreshing, setRefreshing] = useState(false);
   const [moistureDevice, setMoistureDevice] = useState();
   const [waterPumpDevice, setWaterPumpDevice] = useState();
 
+  // Lấy ra các giá trị từ DeviceContext
   const { devices, getAllDevices } = useContext(DeviceContext) as any;
 
   useEffect(() => {
     if (devices?.length) {
+      // Nếu danh sách thiết bị đã có, tìm ra thông tin của cảm biến độ ẩm và máy bơm
+      // và lưu và các state
       const findMoistureDevice = devices?.find((d: any) =>
         d.type?.includes("moisture")
       );
@@ -39,7 +51,7 @@ const Garden = () => {
       setMoistureDevice(findMoistureDevice);
       setWaterPumpDevice(findWaterPumpDevice);
       
-      
+      // Lấy thông tin minThreshold, desireThreshold hiện tại và set cho minPercent, maxPercent
       const {
         config: { minThreshold, desireThreshold },
       } = findMoistureDevice || {};
@@ -49,13 +61,16 @@ const Garden = () => {
     }
   }, [devices]);
 
+  // Sử dụng các hàm từ các custom hooks
   const { onUpdateMoistureConfig } = useUpdateMoistureConfig();
   const { onUpdateWaterPump } = useUpdateWaterPump();
 
+  // Hàm được gọi khi thay đổi giá trị của thanh Min-Slider
   const handleOnChangeMinValue = (value: number) => {
     setMinPercent(value);
   };
 
+  // Hàm được gọi khi thay đổi giá trị của thanh Max-Slider
   const handleOnChangeMaxValue = (value: number) => {
     setMaxPercent(value);
   };
@@ -99,6 +114,7 @@ const Garden = () => {
         </Text>
       </View>
 
+      {/* Dựa vào giá trị của máy bơm để biết hệ thống có đang tưới nước không */}
       {waterPumpDevice ? (
         (waterPumpDevice as any).value ? (
           <LinearGradient
@@ -189,6 +205,7 @@ const Garden = () => {
 
 export default Garden;
 
+// Custom style cho Garden
 const styles = StyleSheet.create({
   container: {
     display: "flex",
@@ -259,17 +276,11 @@ const styles = StyleSheet.create({
   sliderContainer: {
     display: "flex",
     marginVertical: 10,
-    // flexDirection: "row",
-    // alignItems: "center",
-    // justifyContent: "space-between",
   },
   textSlider: {},
   textSliderPercent: {
     fontWeight: "700",
     color: "#EF629F",
-  },
-  slider: {
-    // flexGrow: 1,
   },
   stopStartButton: {
     marginTop: 10,

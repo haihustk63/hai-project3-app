@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+// import các thư viện và module
+import { useCallback, useContext, useState } from "react";
 import {
   RefreshControl,
   ScrollView,
@@ -6,24 +7,33 @@ import {
   Text,
   View,
 } from "react-native";
+
 import RuleCard from "src/components/RuleCard";
-import { DeviceContext } from "src/context/DeviceContect";
+import { DeviceContext } from "src/context/DeviceContext";
 import { RuleContext } from "src/context/RuleContext";
-import Card from "../../components/Card";
+import DeviceCard from "../../components/DeviceCard";
 import GroupButton from "./GroupButton";
 import useUpdateDeviceStatus from "./hooks";
 
 const Home = () => {
+  // Lấy các giá trị DeviceContext cung cấp
   const { devices, getAllDevices, setDevices } = useContext(
     DeviceContext
   ) as any;
 
-  const { rules, handleDeleteRule, handleGetRules } =
-    useContext(RuleContext) as any;
+  // Lấy các giá trị RuleContext cung cấp
+  const { rules, handleDeleteRule, handleGetRules } = useContext(
+    RuleContext
+  ) as any;
+
+  // State refreshing để người dùng có thể kéo load lại trang
   const [refreshing, setRefreshing] = useState(false);
 
+  // Sử dụng hàm onUpdateDevice từ custom hook useUpdateDeviceStatus
   const { onUpdateDevice } = useUpdateDeviceStatus();
 
+  // Mỗi khi device thay đổi thì hàm này sẽ được tạo lại.
+  // Hàm nhận vào deviceId và value mới, dựa vào đó thay đổi giá trị trong state devices
   const handleSetNewDevices = useCallback(
     (deviceId: string, value?: number) => {
       const newDevices = [...devices];
@@ -40,6 +50,8 @@ const Home = () => {
     [devices]
   );
 
+  // Hàm xử lý khi người dùng kéo từ trên xuống (reload trang)
+  // Nó sẽ lấy lại danh sách thiết bị và danh sách luật
   const handleOnRefresh = async () => {
     setRefreshing(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -48,8 +60,10 @@ const Home = () => {
     setRefreshing(false);
   };
 
+  // Nếu có nhiều hơn 4 thiết bị thì chỉ chọn 4 thiết bị đầu hiển thị ở màn home
   const selectItems = devices?.length > 4 ? devices?.slice(0, 4) : devices;
 
+  // Tạo ra cardItems là dữ liệu truyền cho các AppCard
   const cardItems = selectItems?.map((d: any) => ({
     title: d?.name,
     value: d?.interact ? (d?.value ? "ON" : "OFF") : d?.value,
@@ -58,13 +72,16 @@ const Home = () => {
     deviceId: d._id,
   }));
 
+  // Tương tự, chỉ hiển thị tối đa 4 luật tự động
   const ruleItems = rules?.length > 4 ? rules?.slice(0, 4) : rules;
 
+  // Hàm yêu cầu thay đổi trạng thái thiết bị
   const handleChangeStatus = (deviceId: any) => async () => {
     await onUpdateDevice(deviceId);
     handleSetNewDevices(deviceId);
   };
 
+  // Mỗi RuleCard sẽ có một nút xóa, hàm này sẽ thực hiện xóa luật
   const handlePressButtonRuleCard = (ruleId: string) => async () => {
     await handleDeleteRule(ruleId);
   };
@@ -79,8 +96,9 @@ const Home = () => {
       <View style={styles.home}>
         {devices?.length === 0 && <Text>You have no devices!</Text>}
         <View style={styles.container}>
+          {/* Map cardItems sinh ra các DeviceCard */}
           {cardItems?.map((item: any) => (
-            <Card
+            <DeviceCard
               key={item.deviceId}
               title={item.title}
               value={item.value}
@@ -93,6 +111,7 @@ const Home = () => {
         <GroupButton />
         {ruleItems?.length === 0 && <Text>You have no time rules!</Text>}
         <View style={{ ...styles.container, ...styles.container2 }}>
+          {/* Map ruleItems sinh ra các RuleCard */}
           {ruleItems?.map((rule: any) => (
             <RuleCard
               rule={rule}
@@ -103,13 +122,12 @@ const Home = () => {
         </View>
       </View>
     </ScrollView>
-
-    // </LinearGradient>
   );
 };
 
 export default Home;
 
+// Custom style cho Home
 const styles = StyleSheet.create({
   home: {
     marginVertical: 10,

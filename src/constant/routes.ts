@@ -1,3 +1,4 @@
+// Import các màn hình
 import Garden from "src/screens/Garden";
 import Home from "src/screens/Home";
 import Login from "src/screens/Login";
@@ -9,16 +10,7 @@ import Devices from "src/screens/Devices";
 import Rules from "src/screens/Rules";
 import AddNewDevice from "src/screens/AddNewDevice";
 
-// export const SCREEN_NAME = {
-//   HOME: "Home",
-//   AUTOMATION_RULES: "Automation",
-//   GARDEN: "Garden",
-//   ADD_NEW_DEVICE: "Devices",
-//   LOGIN: "Login",
-//   REGISTER: "Register",
-//   PROFILE: "Profile",
-// };
-
+// Các routes (màn) khi chưa đăng nhập: Có màn Login, Register
 export const ROUTES_NOT_AUTH = [
   {
     name: SCREEN_NAME.LOGIN,
@@ -30,6 +22,16 @@ export const ROUTES_NOT_AUTH = [
   },
 ];
 
+
+/* 
+Các routes (màn) khi đã đăng nhập làm User
+Các trường:
+type: Nếu là "stack" thì màn đó sử dụng Stack Navigator
+screens: Danh sách các màn trong một Stack Navigator
+name: Tên của màn
+component: Component của màn
+icon: Được sử dụng trong các màn mà dùng Bottom Tab Navigator
+*/
 export const ROUTES_AUTH = [
   {
     type: "stack",
@@ -74,6 +76,8 @@ export const ROUTES_AUTH = [
   },
 ];
 
+// Các routes (màn) khi đã đăng nhập làm Admin
+// Định nghĩa các trường tương tự như trên
 export const ROUTES_AUTH_ADMIN = [
   {
     type: "stack",

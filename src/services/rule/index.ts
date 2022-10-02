@@ -1,5 +1,7 @@
+// import ruleApi từ thư mục api/rule
 import { ruleApi } from "src/api/rule";
 
+// Định nghĩa lớp RuleService chứa các hàm gọi đến userApi
 class RuleService {
   addRule = async (data: any) => {
     await ruleApi.addNewRule(data);
@@ -26,6 +28,7 @@ class RuleService {
   };
 }
 
+// Tạo ra một thể hiện của lớp RuleService và export cho nơi khác sử dụng
 const ruleService = new RuleService();
 
 export default ruleService;

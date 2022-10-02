@@ -1,14 +1,20 @@
+
+// import từ các thư viện và các module ngoài
 import { Input } from "@rneui/themed";
 import { useFormikContext } from "formik";
 import { StyleSheet, View } from "react-native";
+
 import ErrorMessage from "src/components/ErrorMessage";
 import { LOGIN_FIELD } from "../../../schemas";
 
 const { EMAIL, PASSWORD } = LOGIN_FIELD;
 
 const GroupField = () => {
+  // Sử dụng các state và hàm quản lý form do formik cung cấp
   const { values, handleChange, handleBlur, errors, touched } =
     useFormikContext();
+
+    // Input field gồm 2 trường là email và password
   return (
     <View style={styles.container}>
       <Input
@@ -37,6 +43,7 @@ const GroupField = () => {
 
 export default GroupField;
 
+// Custom style cho GroupField
 const styles = StyleSheet.create({
   container: {
     marginVertical: 20,

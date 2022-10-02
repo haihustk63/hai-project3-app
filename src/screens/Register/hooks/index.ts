@@ -2,8 +2,10 @@ import { useState } from "react";
 import userService from "src/services/user";
 
 const useRegister = () => {
+  // loading: Trạng thái loading khi đang thực hiện thêm tài khoản
   const [loading, setLoading] = useState(false);
 
+  // Hàm giúp đăng ký tài khoản, sử dụng hàm register của userService
   const handleRegister = async ({
     data,
     onSuccess,

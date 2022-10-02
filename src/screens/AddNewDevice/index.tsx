@@ -1,3 +1,4 @@
+// import các thư viện và module ngoài
 import { useContext, useMemo, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "@rneui/themed";
@@ -12,12 +13,14 @@ import {
 } from "react-native";
 
 import AppButton from "src/components/AppButton";
-import { DeviceContext } from "src/context/DeviceContect";
+import { DeviceContext } from "src/context/DeviceContext";
 import { addNewDeviceSchema, ADD_NEW_DEVICE_FIELD } from "../../schemas";
 import GroupField from "./GroupField";
 
+// Form sẽ gồm các trường name, type, port, person, floor, room
 const { NAME, TYPE, PORT, PERSON, FLOOR, ROOM } = ADD_NEW_DEVICE_FIELD;
 
+// Khởi tạo giá trị cho form
 const initialValues = {
   [NAME]: "",
   [TYPE]: "",
@@ -28,15 +31,18 @@ const initialValues = {
 };
 
 const AddNewDevice = () => {
+  // Lấy ra các giá trị mà DeviceContext cung cấp
   const {
     addNewDevice,
     deviceTypes = [],
     devices,
     getAllDevices,
   } = useContext(DeviceContext) as any;
-  const navigate = useNavigation();
+
+  // reference truyền cho form
   const ref = useRef(null) as any;
 
+  // Hàm thực hiện khi submit form
   const handleSubmitForm = async (values: any) => {
     if (deviceTypes.length) {
       const { type } = values;
@@ -45,14 +51,15 @@ const AddNewDevice = () => {
       if (t) {
         const data = { ...values, interact: t.interact };
         await addNewDevice(data);
+        // Sau khi thêm mới thiết bị, đưa form về trạng thái ban đầu và lấy lại danh sách thiết bị
         ref?.current.setValues({ ...initialValues });
         ref?.current.setTouched({ [NAME]: false, [TYPE]: false });
         await getAllDevices();
-        // navigate.navigate(SCREEN_NAME.HOME as any);
       }
     }
   };
 
+  // Schema truyền cho form, sẽ thay đổi khi danh sách ports của các thiết bị thay đổi
   const schema = useMemo(() => {
     const ports = devices?.map((d: any) => d.port);
     return addNewDeviceSchema(ports);
@@ -92,13 +99,12 @@ const AddNewDevice = () => {
 
 export default AddNewDevice;
 
+// Custom style cho màn AddNewDevice
 const styles = StyleSheet.create({
   container: {
-    // marginTop: 20,
   },
   image: {
     width: "100%",
     aspectRatio: 1,
-    // height:
   },
 });
